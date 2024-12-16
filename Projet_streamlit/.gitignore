@@ -1,0 +1,6 @@
+# Ignorer les fichiers avec les extensions qui suivent
+*.csv 
+*.pdf
+# Ignorer mon environnement virtuel
+env/
+__pycache__/
