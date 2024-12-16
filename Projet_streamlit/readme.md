@@ -7,7 +7,7 @@ Build a Web application on credit card transaction dataset from Kaggle:
 - Macro Analysis tool across States
 - WordCloud tool generator
 
-## Step to run the web application
+## Steps to run the web application
 - Step1: Download the entire folder "Projet_streamlit" from this repository and dezip in your local workingspace
 - Step2: download the dataset.csv from kaggle:
   [download link](https://www.kaggle.com/datasets/priyamchoksi/credit-card-transactions-dataset)
