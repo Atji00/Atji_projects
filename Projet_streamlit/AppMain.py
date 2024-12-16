@@ -41,8 +41,7 @@ pages = [
     st.Page("TableauBordIndividu.py", title="Suivi des KPIs Individus"),
     st.Page("GeoAnalysisCharts.py", title="GeoAnalyse"),
     st.Page("MacroAnalyseCharts.py", title="MacroAnalyse"),
-    st.Page("WordCloud.py", title="WordCloud"),
-    st.Page("MachineLearning.py", title="Machine Learning"),
+    st.Page("WordCloud.py", title="WordCloud")
 ]
 
 pg = st.navigation(pages)
