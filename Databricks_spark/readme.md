@@ -1,1 +1,1 @@
-Projects in preprocessing data (json) on spark plateform with spark Scala/SQL
+Projects in preprocessing data (json) on Databricks platform with Spark Scala/SQL
