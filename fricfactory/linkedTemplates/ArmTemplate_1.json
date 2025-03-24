@@ -1,0 +1,1727 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "fricfactory"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeODSMagasin')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeODSMagasin",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table ODS.magasins",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_Magasin",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Magasin",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Nom_Magasin",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Nom_Magasin",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Ville",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Ville",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Pays",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Pays",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ADL_Magasins",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ODS_Magasins",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "ODSPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-02T15:29:47Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeODSProduit')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeODSProduit",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table ODS.produits",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_Produit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Produit",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Nom_Produit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Nom_Produit",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Categorie",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Categorie",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Prix_Achat",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Prix_Achat",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "Prix_Vente",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Prix_Vente",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "Stock_Disponible",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Stock_Disponible",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ADL_Produits",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ODS_Produits",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "ODSPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-02T15:22:26Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeODSVente')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeODSVente",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table ODS.ventes",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_Vente",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Vente",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Date_Vente",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Date_Vente",
+											"type": "DateTime",
+											"physicalType": "date"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_Client",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Client",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_Produit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Produit",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Quantite",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Quantite",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "Prix_Unitaire",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Prix_Unitaire",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "Mode_Paiement",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Mode_Paiement",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_Magasin",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Magasin",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ADL_Ventes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ODS_Ventes",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "ODSPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-02T14:38:59Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FlowDWHClient')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Inject transformed data from ODS table Clients to DWH table clients",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ODS_Clients",
+								"type": "DatasetReference"
+							},
+							"name": "ODSClients"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_Clients",
+								"type": "DatasetReference"
+							},
+							"name": "DWHClients"
+						}
+					],
+					"transformations": [
+						{
+							"name": "UpdateInsertODSRows"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ID_Client as string,",
+						"          Nom_Client as string,",
+						"          Prenom_Client as string,",
+						"          Email as string,",
+						"          Telephone as integer,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> ODSClients",
+						"ODSClients alterRow(upsertIf(1==1)) ~> UpdateInsertODSRows",
+						"UpdateInsertODSRows sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ClientRowID as integer,",
+						"          ID_Client as string,",
+						"          Nom_Client as string,",
+						"          Prenom_Client as string,",
+						"          Email as string,",
+						"          Telephone as integer,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['ID_Client'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ID_Client,",
+						"          Nom_Client,",
+						"          Prenom_Client,",
+						"          Email,",
+						"          Telephone,",
+						"          Ville,",
+						"          Pays",
+						"     )) ~> DWHClients"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FlowDWHDepense')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ODS_Depenses",
+								"type": "DatasetReference"
+							},
+							"name": "ODSDepenses"
+						},
+						{
+							"dataset": {
+								"referenceName": "DHW_Calendrier",
+								"type": "DatasetReference"
+							},
+							"name": "DWHCalendrier"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_Magasins",
+								"type": "DatasetReference"
+							},
+							"name": "DWHMagasins"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_FactDepenses",
+								"type": "DatasetReference"
+							},
+							"name": "DWHFactDepenses"
+						}
+					],
+					"transformations": [
+						{
+							"name": "CastIntIDDepense",
+							"description": "Update ID_Depense to drop first character \nexample: D0000001 = 0000001"
+						},
+						{
+							"name": "LookupIDate"
+						},
+						{
+							"name": "FetchIDate"
+						},
+						{
+							"name": "LookupMagasinRowID"
+						},
+						{
+							"name": "FetchMagasinRowID"
+						},
+						{
+							"name": "UpdateODSRows"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {ID_Dépense} as string,",
+						"          {Date_Dépense} as date,",
+						"          {Catégorie_Dépense} as string,",
+						"          Montant as decimal(18,0),",
+						"          ID_Magasin as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> ODSDepenses",
+						"source(output(",
+						"          idDate as integer,",
+						"          Date_cal as date,",
+						"          Year as integer,",
+						"          Month as integer,",
+						"          Day as integer,",
+						"          Week as integer,",
+						"          Quarter as integer,",
+						"          DayOfWeek as integer,",
+						"          DayName as string,",
+						"          MonthName as string,",
+						"          IsWeekend as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> DWHCalendrier",
+						"source(output(",
+						"          MagasinRowID as integer,",
+						"          ID_Magasin as string,",
+						"          Nom_Magasin as string,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> DWHMagasins",
+						"ODSDepenses derive(IDDepense = toInteger(dropLeft({ID_Dépense},1))) ~> CastIntIDDepense",
+						"CastIntIDDepense, DWHCalendrier lookup({Date_Dépense} == Date_cal,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupIDate",
+						"LookupIDate select(mapColumn(",
+						"          {ID_Dépense},",
+						"          IDDepense,",
+						"          ID_Magasin,",
+						"          {Date_Dépense},",
+						"          Montant,",
+						"          {Catégorie_Dépense},",
+						"          idDate,",
+						"          Date_cal",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FetchIDate",
+						"FetchIDate, DWHMagasins lookup(FetchIDate@ID_Magasin == DWHMagasins@ID_Magasin,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupMagasinRowID",
+						"LookupMagasinRowID select(mapColumn(",
+						"          IDDepense,",
+						"          idDate,",
+						"          MagasinRowID,",
+						"          Montant,",
+						"          {Catégorie_Dépense}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FetchMagasinRowID",
+						"FetchMagasinRowID alterRow(upsertIf(1==1)) ~> UpdateODSRows",
+						"UpdateODSRows sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          IDDepense as integer,",
+						"          IDate as integer,",
+						"          MagasinRowID as integer,",
+						"          Montant as integer,",
+						"          {Catégorie_Dépense} as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['IDDepense'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          IDDepense,",
+						"          IDate = idDate,",
+						"          MagasinRowID,",
+						"          Montant,",
+						"          {Catégorie_Dépense}",
+						"     )) ~> DWHFactDepenses"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FlowDWHMagasin')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ODS_Magasins",
+								"type": "DatasetReference"
+							},
+							"name": "ODSMagasins"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_Magasins",
+								"type": "DatasetReference"
+							},
+							"name": "DWHMagasins"
+						}
+					],
+					"transformations": [
+						{
+							"name": "UpdateInsertODSRows"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ID_Magasin as string,",
+						"          Nom_Magasin as string,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> ODSMagasins",
+						"ODSMagasins alterRow(upsertIf(1==1)) ~> UpdateInsertODSRows",
+						"UpdateInsertODSRows sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          MagasinRowID as integer,",
+						"          ID_Magasin as string,",
+						"          Nom_Magasin as string,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['ID_Magasin'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ID_Magasin,",
+						"          Nom_Magasin,",
+						"          Ville,",
+						"          Pays",
+						"     )) ~> DWHMagasins"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FlowDWHProduit')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Injected transformed data from ODS table Produits to DWH table Produits",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ODS_Produits",
+								"type": "DatasetReference"
+							},
+							"name": "ODSProduits"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_Produits",
+								"type": "DatasetReference"
+							},
+							"name": "DWHProduits"
+						}
+					],
+					"transformations": [
+						{
+							"name": "UpdateInsertODSRows"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ID_Produit as string,",
+						"          Nom_Produit as string,",
+						"          Categorie as string,",
+						"          Prix_Achat as decimal(18,0),",
+						"          Prix_Vente as decimal(18,0),",
+						"          Stock_Disponible as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> ODSProduits",
+						"ODSProduits alterRow(upsertIf(1==1)) ~> UpdateInsertODSRows",
+						"UpdateInsertODSRows sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ProduitRowID as integer,",
+						"          ID_Produit as string,",
+						"          Nom_Produit as string,",
+						"          Categorie as string,",
+						"          Prix_Achat as decimal(18,0),",
+						"          Prix_Vente as decimal(18,0),",
+						"          Stock_Disponible as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['ID_Produit'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ID_Produit,",
+						"          Nom_Produit,",
+						"          Categorie,",
+						"          Prix_Achat,",
+						"          Prix_Vente,",
+						"          Stock_Disponible",
+						"     )) ~> DWHProduits"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FlowDWHVente')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ODS_Ventes",
+								"type": "DatasetReference"
+							},
+							"name": "ODSVentes"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_Clients",
+								"type": "DatasetReference"
+							},
+							"name": "DWHClients"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_Produits",
+								"type": "DatasetReference"
+							},
+							"name": "DWHProduits"
+						},
+						{
+							"dataset": {
+								"referenceName": "DWH_Magasins",
+								"type": "DatasetReference"
+							},
+							"name": "DWHMagasins"
+						},
+						{
+							"dataset": {
+								"referenceName": "DHW_Calendrier",
+								"type": "DatasetReference"
+							},
+							"name": "DWHCalendrier"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DWH_FactVentes",
+								"type": "DatasetReference"
+							},
+							"name": "DWHFactVentes"
+						}
+					],
+					"transformations": [
+						{
+							"name": "LookupClientRowID"
+						},
+						{
+							"name": "FetchClientRowID"
+						},
+						{
+							"name": "LookupProduitRowID"
+						},
+						{
+							"name": "FetchProduitRowID"
+						},
+						{
+							"name": "LookupMagasinRowID"
+						},
+						{
+							"name": "FetchMagasinRowID"
+						},
+						{
+							"name": "LookupIDate"
+						},
+						{
+							"name": "FetchIDate"
+						},
+						{
+							"name": "CastIntIDVente"
+						},
+						{
+							"name": "UpdateInsertDataRows"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ID_Vente as string,",
+						"          Date_Vente as date,",
+						"          ID_Client as string,",
+						"          ID_Produit as string,",
+						"          Quantite as decimal(18,0),",
+						"          Prix_Unitaire as decimal(18,0),",
+						"          Mode_Paiement as string,",
+						"          ID_Magasin as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> ODSVentes",
+						"source(output(",
+						"          ClientRowID as integer,",
+						"          ID_Client as string,",
+						"          Nom_Client as string,",
+						"          Prenom_Client as string,",
+						"          Email as string,",
+						"          Telephone as integer,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> DWHClients",
+						"source(output(",
+						"          ProduitRowID as integer,",
+						"          ID_Produit as string,",
+						"          Nom_Produit as string,",
+						"          Categorie as string,",
+						"          Prix_Achat as decimal(18,0),",
+						"          Prix_Vente as decimal(18,0),",
+						"          Stock_Disponible as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> DWHProduits",
+						"source(output(",
+						"          MagasinRowID as integer,",
+						"          ID_Magasin as string,",
+						"          Nom_Magasin as string,",
+						"          Ville as string,",
+						"          Pays as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> DWHMagasins",
+						"source(output(",
+						"          idDate as integer,",
+						"          Date_cal as date,",
+						"          Year as integer,",
+						"          Month as integer,",
+						"          Day as integer,",
+						"          Week as integer,",
+						"          Quarter as integer,",
+						"          DayOfWeek as integer,",
+						"          DayName as string,",
+						"          MonthName as string,",
+						"          IsWeekend as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> DWHCalendrier",
+						"ODSVentes, DWHClients lookup(ODSVentes@ID_Client == DWHClients@ID_Client,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupClientRowID",
+						"LookupClientRowID select(mapColumn(",
+						"          ID_Vente,",
+						"          Date_Vente,",
+						"          ID_Produit,",
+						"          Quantite,",
+						"          Prix_Unitaire,",
+						"          Mode_Paiement,",
+						"          ID_Magasin,",
+						"          ClientRowID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FetchClientRowID",
+						"FetchClientRowID, DWHProduits lookup(FetchClientRowID@ID_Produit == DWHProduits@ID_Produit,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupProduitRowID",
+						"LookupProduitRowID select(mapColumn(",
+						"          ID_Vente,",
+						"          Date_Vente,",
+						"          Quantite,",
+						"          Prix_Unitaire,",
+						"          Mode_Paiement,",
+						"          ID_Magasin,",
+						"          ClientRowID,",
+						"          ProduitRowID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FetchProduitRowID",
+						"FetchProduitRowID, DWHMagasins lookup(FetchProduitRowID@ID_Magasin == DWHMagasins@ID_Magasin,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupMagasinRowID",
+						"LookupMagasinRowID select(mapColumn(",
+						"          ID_Vente,",
+						"          Date_Vente,",
+						"          Quantite,",
+						"          Prix_Unitaire,",
+						"          Mode_Paiement,",
+						"          ClientRowID,",
+						"          ProduitRowID,",
+						"          MagasinRowID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FetchMagasinRowID",
+						"FetchMagasinRowID, DWHCalendrier lookup(Date_Vente == Date_cal,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupIDate",
+						"LookupIDate select(mapColumn(",
+						"          ID_Vente,",
+						"          idDate,",
+						"          ClientRowID,",
+						"          ProduitRowID,",
+						"          MagasinRowID,",
+						"          Quantite,",
+						"          Prix_Unitaire,",
+						"          Mode_Paiement",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FetchIDate",
+						"FetchIDate derive(IDVente = toInteger(dropLeft(ID_Vente,1))) ~> CastIntIDVente",
+						"CastIntIDVente alterRow(upsertIf(1==1)) ~> UpdateInsertDataRows",
+						"UpdateInsertDataRows sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          IDVente as integer,",
+						"          IDate as integer,",
+						"          ClientRowID as integer,",
+						"          ProduitRowID as integer,",
+						"          MagasinRowID as integer,",
+						"          Quantite as integer,",
+						"          Prix_Unitaire as integer,",
+						"          Mode_Paiement as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['IDVente'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          IDVente,",
+						"          IDate = idDate,",
+						"          ClientRowID,",
+						"          ProduitRowID,",
+						"          MagasinRowID,",
+						"          Quantite,",
+						"          Prix_Unitaire,",
+						"          Mode_Paiement",
+						"     )) ~> DWHFactVentes"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MasterPipeODS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeODSVente",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeODSVente",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeODSProduit",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PipeODSDepense",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeODSProduit",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeODSMagasin",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PipeODSClient",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeODSMagasin",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeODSDepense",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PipeODSVente",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeODSDepense",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeODSClient",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PipeODSProduit",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeODSClient",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-02T18:50:13Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PipeODSVente')]",
+				"[concat(variables('factoryId'), '/pipelines/PipeODSProduit')]",
+				"[concat(variables('factoryId'), '/pipelines/PipeODSMagasin')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeDWHClient')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FlowDWHClients",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FlowDWHClient",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ODSClients": {},
+									"DWHClients": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DWHPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T12:36:11Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FlowDWHClient')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeDWHDepense')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FlowDWHDepense",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FlowDWHDepense",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ODSDepenses": {},
+									"DWHCalendrier": {},
+									"DWHMagasins": {},
+									"DWHFactDepenses": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DWHPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T15:35:59Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FlowDWHDepense')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeDWHMagasin')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FlowDWHMagasins",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FlowDWHMagasin",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ODSMagasins": {},
+									"DWHMagasins": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DWHPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T12:36:11Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FlowDWHMagasin')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeDWHProduit')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FlowDWHProduits",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FlowDWHProduit",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ODSProduits": {},
+									"DWHProduits": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DWHPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T12:36:11Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FlowDWHProduit')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeDWHVente')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FlowDWHVente",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FlowDWHVente",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ODSVentes": {},
+									"DWHClients": {},
+									"DWHProduits": {},
+									"DWHMagasins": {},
+									"DWHCalendrier": {},
+									"DWHFactVentes": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "DWHPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T16:32:17Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FlowDWHVente')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MasterPipeDWH')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeDWHClient",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeDWHClient",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeDWHProduit",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeDWHProduit",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeDWHMagasin",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeDWHMagasin",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeDWHDepense",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "DimTablesWaiter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeDWHDepense",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PipeDWHVente",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "FactDepenseWaiter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PipeDWHVente",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DimTablesWaiter",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "PipeDWHClient",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "PipeDWHProduit",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "PipeDWHMagasin",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "FactDepenseWaiter",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "PipeDWHDepense",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T17:14:38Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PipeDWHClient')]",
+				"[concat(variables('factoryId'), '/pipelines/PipeDWHProduit')]",
+				"[concat(variables('factoryId'), '/pipelines/PipeDWHMagasin')]",
+				"[concat(variables('factoryId'), '/pipelines/PipeDWHDepense')]",
+				"[concat(variables('factoryId'), '/pipelines/PipeDWHVente')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MasterPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MasterPipeDWH",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "MasterPipeODS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "MasterPipeDWH",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "MasterPipeODS",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "MasterPipeODS",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-04T17:07:31Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/MasterPipeDWH')]",
+				"[concat(variables('factoryId'), '/pipelines/MasterPipeODS')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "fricfactory"
+		},
+		"FricDataLakeStorage_accountKey": {
+			"value": ""
+		},
+		"FricSqlDatabase_password": {
+			"value": ""
+		},
+		"FricDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://fricdatalake.dfs.core.windows.net/"
+		},
+		"FricSqlDatabase_properties_typeProperties_server": {
+			"value": "fric00.database.windows.net"
+		},
+		"FricSqlDatabase_properties_typeProperties_database": {
+			"value": "fricSqlDatabase"
+		},
+		"FricSqlDatabase_properties_typeProperties_userName": {
+			"value": "adminfric"
+		}
+	}
+}

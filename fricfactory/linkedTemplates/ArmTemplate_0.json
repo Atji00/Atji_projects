@@ -1,0 +1,1262 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "fricfactory"
+		},
+		"FricDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'FricDataLakeStorage'"
+		},
+		"FricSqlDatabase_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FricSqlDatabase'"
+		},
+		"FricDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://fricdatalake.dfs.core.windows.net/"
+		},
+		"FricSqlDatabase_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "fric00.database.windows.net"
+		},
+		"FricSqlDatabase_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "fricSqlDatabase"
+		},
+		"FricSqlDatabase_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminfric"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/FricDataLakeStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('FricDataLakeStorage_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('FricDataLakeStorage_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FricSqlDatabase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('FricSqlDatabase_properties_typeProperties_server')]",
+					"database": "[parameters('FricSqlDatabase_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('FricSqlDatabase_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FricSqlDatabase_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADL_Clients')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ADL(AzureDataLake)-Tables"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "clients",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "clients.xls",
+						"fileSystem": "datalake"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADL_Depenses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ADL(AzureDataLake)-Tables"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "depenses.csv",
+						"fileSystem": "datalake"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID_Dépense",
+						"type": "String"
+					},
+					{
+						"name": "Date_Dépense",
+						"type": "String"
+					},
+					{
+						"name": "Catégorie_Dépense",
+						"type": "String"
+					},
+					{
+						"name": "Montant",
+						"type": "String"
+					},
+					{
+						"name": "ID_Magasin",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADL_Magasins')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ADL(AzureDataLake)-Tables"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "magasins.txt",
+						"fileSystem": "datalake"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID_Magasin",
+						"type": "String"
+					},
+					{
+						"name": "Nom_Magasin",
+						"type": "String"
+					},
+					{
+						"name": "Ville",
+						"type": "String"
+					},
+					{
+						"name": "Pays",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADL_Produits')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ADL(AzureDataLake)-Tables"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "produits.csv",
+						"fileSystem": "datalake"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID_Produit",
+						"type": "String"
+					},
+					{
+						"name": "Nom_Produit",
+						"type": "String"
+					},
+					{
+						"name": "Categorie",
+						"type": "String"
+					},
+					{
+						"name": "Prix_Achat",
+						"type": "String"
+					},
+					{
+						"name": "Prix_Vente",
+						"type": "String"
+					},
+					{
+						"name": "Stock_Disponible",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADL_Ventes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ADL(AzureDataLake)-Tables"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ventes.csv",
+						"fileSystem": "datalake"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID_Vente",
+						"type": "String"
+					},
+					{
+						"name": "Date_Vente",
+						"type": "String"
+					},
+					{
+						"name": "ID_Client",
+						"type": "String"
+					},
+					{
+						"name": "ID_Produit",
+						"type": "String"
+					},
+					{
+						"name": "Quantite",
+						"type": "String"
+					},
+					{
+						"name": "Prix_Unitaire",
+						"type": "String"
+					},
+					{
+						"name": "Mode_Paiement",
+						"type": "String"
+					},
+					{
+						"name": "ID_Magasin",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DHW_Calendrier')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW(DataWareHouse)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "idDate",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Date_cal",
+						"type": "date"
+					},
+					{
+						"name": "Year",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Month",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Day",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Week",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Quarter",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DayOfWeek",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DayName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MonthName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsWeekend",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH",
+					"table": "CALENDRIER"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH_Clients')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW(DataWareHouse)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ClientRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ID_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "Nom_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "Prenom_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "Email",
+						"type": "varchar"
+					},
+					{
+						"name": "Telephone",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Ville",
+						"type": "varchar"
+					},
+					{
+						"name": "Pays",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH",
+					"table": "Dim_clients"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH_FactDepenses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW(DataWareHouse)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "IDDepense",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "IDate",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MagasinRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Montant",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Catégorie_Dépense",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH",
+					"table": "Fact_depenses"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH_FactVentes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW(DataWareHouse)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "IDVente",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "IDate",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ClientRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProduitRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MagasinRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Quantite",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Prix_Unitaire",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Mode_Paiement",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH",
+					"table": "Fact_ventes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH_Magasins')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW(DataWareHouse)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "MagasinRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ID_Magasin",
+						"type": "varchar"
+					},
+					{
+						"name": "Nom_Magasin",
+						"type": "varchar"
+					},
+					{
+						"name": "Ville",
+						"type": "varchar"
+					},
+					{
+						"name": "Pays",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH",
+					"table": "Dim_magasins"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DWH_Produits')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW(DataWareHouse)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProduitRowID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ID_Produit",
+						"type": "varchar"
+					},
+					{
+						"name": "Nom_Produit",
+						"type": "varchar"
+					},
+					{
+						"name": "Categorie",
+						"type": "varchar"
+					},
+					{
+						"name": "Prix_Achat",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Prix_Vente",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Stock_Disponible",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "DWH",
+					"table": "Dim_produits"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS_Clients')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ODS(Operational Data Store)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "Nom_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "Prenom_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "Email",
+						"type": "varchar"
+					},
+					{
+						"name": "Telephone",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Ville",
+						"type": "varchar"
+					},
+					{
+						"name": "Pays",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "ODS",
+					"table": "clients"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS_Depenses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ODS(Operational Data Store)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID_Dépense",
+						"type": "varchar"
+					},
+					{
+						"name": "Date_Dépense",
+						"type": "date"
+					},
+					{
+						"name": "Catégorie_Dépense",
+						"type": "varchar"
+					},
+					{
+						"name": "Montant",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "ID_Magasin",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "ODS",
+					"table": "depenses"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS_Magasins')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ODS(Operational Data Store)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID_Magasin",
+						"type": "varchar"
+					},
+					{
+						"name": "Nom_Magasin",
+						"type": "varchar"
+					},
+					{
+						"name": "Ville",
+						"type": "varchar"
+					},
+					{
+						"name": "Pays",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "ODS",
+					"table": "magasins"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS_Produits')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ODS(Operational Data Store)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID_Produit",
+						"type": "varchar"
+					},
+					{
+						"name": "Nom_Produit",
+						"type": "varchar"
+					},
+					{
+						"name": "Categorie",
+						"type": "varchar"
+					},
+					{
+						"name": "Prix_Achat",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Prix_Vente",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Stock_Disponible",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "ODS",
+					"table": "produits"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS_Ventes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FricSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "ODS(Operational Data Store)-Tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID_Vente",
+						"type": "varchar"
+					},
+					{
+						"name": "Date_Vente",
+						"type": "date"
+					},
+					{
+						"name": "ID_Client",
+						"type": "varchar"
+					},
+					{
+						"name": "ID_Produit",
+						"type": "varchar"
+					},
+					{
+						"name": "Quantite",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Prix_Unitaire",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Mode_Paiement",
+						"type": "varchar"
+					},
+					{
+						"name": "ID_Magasin",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "ODS",
+					"table": "ventes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/FricSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeODSClient')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeODSClient",
+						"description": "",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table ODS.clients",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_Client",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Client",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Nom_Client",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Nom_Client",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Prenom_Client",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Prenom_Client",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Email",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Email",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Telephone",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Telephone",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Ville",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Ville",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Pays",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Pays",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ADL_Clients",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ODS_Clients",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "ODSPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-02T15:01:08Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ADL_Clients')]",
+				"[concat(variables('factoryId'), '/datasets/ODS_Clients')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeODSDepense')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PipeODSDepense",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table ODS.depenses",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_Dépense",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Dépense",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Date_Dépense",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Date_Dépense",
+											"type": "DateTime",
+											"physicalType": "date"
+										}
+									},
+									{
+										"source": {
+											"name": "Catégorie_Dépense",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Catégorie_Dépense",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Montant",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Montant",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "ID_Magasin",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID_Magasin",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ADL_Depenses",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ODS_Depenses",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "ODSPipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-02T18:39:25Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ADL_Depenses')]",
+				"[concat(variables('factoryId'), '/datasets/ODS_Depenses')]"
+			]
+		}
+	]
+}
