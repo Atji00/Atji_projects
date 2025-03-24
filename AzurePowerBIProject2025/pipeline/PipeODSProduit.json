@@ -1,0 +1,145 @@
+{
+	"name": "PipeODSProduit",
+	"properties": {
+		"activities": [
+			{
+				"name": "PipeODSProduit",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table ODS.produits",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_Produit",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_Produit",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Nom_Produit",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Nom_Produit",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Categorie",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Categorie",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Prix_Achat",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Prix_Achat",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "Prix_Vente",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Prix_Vente",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "Stock_Disponible",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Stock_Disponible",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ADL_Produits",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ODS_Produits",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "ODSPipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-02T15:22:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

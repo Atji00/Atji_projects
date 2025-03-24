@@ -1,0 +1,158 @@
+{
+	"name": "FlowDWHDepense",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_Depenses",
+						"type": "DatasetReference"
+					},
+					"name": "ODSDepenses"
+				},
+				{
+					"dataset": {
+						"referenceName": "DHW_Calendrier",
+						"type": "DatasetReference"
+					},
+					"name": "DWHCalendrier"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Magasins",
+						"type": "DatasetReference"
+					},
+					"name": "DWHMagasins"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_FactDepenses",
+						"type": "DatasetReference"
+					},
+					"name": "DWHFactDepenses"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CastIntIDDepense",
+					"description": "Update ID_Depense to drop first character \nexample: D0000001 = 0000001"
+				},
+				{
+					"name": "LookupIDate"
+				},
+				{
+					"name": "FetchIDate"
+				},
+				{
+					"name": "LookupMagasinRowID"
+				},
+				{
+					"name": "FetchMagasinRowID"
+				},
+				{
+					"name": "UpdateODSRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {ID_Dépense} as string,",
+				"          {Date_Dépense} as date,",
+				"          {Catégorie_Dépense} as string,",
+				"          Montant as decimal(18,0),",
+				"          ID_Magasin as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ODSDepenses",
+				"source(output(",
+				"          idDate as integer,",
+				"          Date_cal as date,",
+				"          Year as integer,",
+				"          Month as integer,",
+				"          Day as integer,",
+				"          Week as integer,",
+				"          Quarter as integer,",
+				"          DayOfWeek as integer,",
+				"          DayName as string,",
+				"          MonthName as string,",
+				"          IsWeekend as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DWHCalendrier",
+				"source(output(",
+				"          MagasinRowID as integer,",
+				"          ID_Magasin as string,",
+				"          Nom_Magasin as string,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DWHMagasins",
+				"ODSDepenses derive(IDDepense = toInteger(dropLeft({ID_Dépense},1))) ~> CastIntIDDepense",
+				"CastIntIDDepense, DWHCalendrier lookup({Date_Dépense} == Date_cal,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupIDate",
+				"LookupIDate select(mapColumn(",
+				"          {ID_Dépense},",
+				"          IDDepense,",
+				"          ID_Magasin,",
+				"          {Date_Dépense},",
+				"          Montant,",
+				"          {Catégorie_Dépense},",
+				"          idDate,",
+				"          Date_cal",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FetchIDate",
+				"FetchIDate, DWHMagasins lookup(FetchIDate@ID_Magasin == DWHMagasins@ID_Magasin,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupMagasinRowID",
+				"LookupMagasinRowID select(mapColumn(",
+				"          IDDepense,",
+				"          idDate,",
+				"          MagasinRowID,",
+				"          Montant,",
+				"          {Catégorie_Dépense}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FetchMagasinRowID",
+				"FetchMagasinRowID alterRow(upsertIf(1==1)) ~> UpdateODSRows",
+				"UpdateODSRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          IDDepense as integer,",
+				"          IDate as integer,",
+				"          MagasinRowID as integer,",
+				"          Montant as integer,",
+				"          {Catégorie_Dépense} as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['IDDepense'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          IDDepense,",
+				"          IDate = idDate,",
+				"          MagasinRowID,",
+				"          Montant,",
+				"          {Catégorie_Dépense}",
+				"     )) ~> DWHFactDepenses"
+			]
+		}
+	}
+}

@@ -1,0 +1,48 @@
+{
+	"name": "ADL_Depenses",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADL(AzureDataLake)-Tables"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "depenses.csv",
+				"fileSystem": "datalake"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID_Dépense",
+				"type": "String"
+			},
+			{
+				"name": "Date_Dépense",
+				"type": "String"
+			},
+			{
+				"name": "Catégorie_Dépense",
+				"type": "String"
+			},
+			{
+				"name": "Montant",
+				"type": "String"
+			},
+			{
+				"name": "ID_Magasin",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

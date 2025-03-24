@@ -1,0 +1,118 @@
+{
+	"name": "MasterPipeODS",
+	"properties": {
+		"activities": [
+			{
+				"name": "PipeODSVente",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PipeODSVente",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipeODSProduit",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PipeODSDepense",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PipeODSProduit",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipeODSMagasin",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PipeODSClient",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PipeODSMagasin",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipeODSDepense",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PipeODSVente",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PipeODSDepense",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipeODSClient",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PipeODSProduit",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PipeODSClient",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-03-02T18:50:13Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

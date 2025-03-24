@@ -1,0 +1,9 @@
+{
+	"name": "fricfactory",
+	"location": "francecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "abfc3f32-9d96-4b7f-a906-ffc520563721",
+		"tenantId": "8c6f9078-037e-4261-a583-52a944e55f7f"
+	}
+}

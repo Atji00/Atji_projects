@@ -1,0 +1,43 @@
+{
+	"name": "ODS_Depenses",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ODS(Operational Data Store)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID_Dépense",
+				"type": "varchar"
+			},
+			{
+				"name": "Date_Dépense",
+				"type": "date"
+			},
+			{
+				"name": "Catégorie_Dépense",
+				"type": "varchar"
+			},
+			{
+				"name": "Montant",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "ID_Magasin",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "ODS",
+			"table": "depenses"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

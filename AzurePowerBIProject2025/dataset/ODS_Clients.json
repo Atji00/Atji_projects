@@ -1,0 +1,50 @@
+{
+	"name": "ODS_Clients",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ODS(Operational Data Store)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID_Client",
+				"type": "varchar"
+			},
+			{
+				"name": "Nom_Client",
+				"type": "varchar"
+			},
+			{
+				"name": "Prenom_Client",
+				"type": "varchar"
+			},
+			{
+				"name": "Email",
+				"type": "varchar"
+			},
+			{
+				"name": "Telephone",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Ville",
+				"type": "varchar"
+			},
+			{
+				"name": "Pays",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "ODS",
+			"table": "clients"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

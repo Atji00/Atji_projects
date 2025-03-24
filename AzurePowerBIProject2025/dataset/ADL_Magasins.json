@@ -1,0 +1,44 @@
+{
+	"name": "ADL_Magasins",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADL(AzureDataLake)-Tables"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "magasins.txt",
+				"fileSystem": "datalake"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID_Magasin",
+				"type": "String"
+			},
+			{
+				"name": "Nom_Magasin",
+				"type": "String"
+			},
+			{
+				"name": "Ville",
+				"type": "String"
+			},
+			{
+				"name": "Pays",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,75 @@
+{
+	"name": "FlowDWHProduit",
+	"properties": {
+		"description": "Injected transformed data from ODS table Produits to DWH table Produits",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_Produits",
+						"type": "DatasetReference"
+					},
+					"name": "ODSProduits"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_Produits",
+						"type": "DatasetReference"
+					},
+					"name": "DWHProduits"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UpdateInsertODSRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID_Produit as string,",
+				"          Nom_Produit as string,",
+				"          Categorie as string,",
+				"          Prix_Achat as decimal(18,0),",
+				"          Prix_Vente as decimal(18,0),",
+				"          Stock_Disponible as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ODSProduits",
+				"ODSProduits alterRow(upsertIf(1==1)) ~> UpdateInsertODSRows",
+				"UpdateInsertODSRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ProduitRowID as integer,",
+				"          ID_Produit as string,",
+				"          Nom_Produit as string,",
+				"          Categorie as string,",
+				"          Prix_Achat as decimal(18,0),",
+				"          Prix_Vente as decimal(18,0),",
+				"          Stock_Disponible as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['ID_Produit'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID_Produit,",
+				"          Nom_Produit,",
+				"          Categorie,",
+				"          Prix_Achat,",
+				"          Prix_Vente,",
+				"          Stock_Disponible",
+				"     )) ~> DWHProduits"
+			]
+		}
+	}
+}

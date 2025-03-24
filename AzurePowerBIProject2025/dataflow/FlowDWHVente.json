@@ -1,0 +1,254 @@
+{
+	"name": "FlowDWHVente",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_Ventes",
+						"type": "DatasetReference"
+					},
+					"name": "ODSVentes"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Clients",
+						"type": "DatasetReference"
+					},
+					"name": "DWHClients"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Produits",
+						"type": "DatasetReference"
+					},
+					"name": "DWHProduits"
+				},
+				{
+					"dataset": {
+						"referenceName": "DWH_Magasins",
+						"type": "DatasetReference"
+					},
+					"name": "DWHMagasins"
+				},
+				{
+					"dataset": {
+						"referenceName": "DHW_Calendrier",
+						"type": "DatasetReference"
+					},
+					"name": "DWHCalendrier"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_FactVentes",
+						"type": "DatasetReference"
+					},
+					"name": "DWHFactVentes"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LookupClientRowID"
+				},
+				{
+					"name": "FetchClientRowID"
+				},
+				{
+					"name": "LookupProduitRowID"
+				},
+				{
+					"name": "FetchProduitRowID"
+				},
+				{
+					"name": "LookupMagasinRowID"
+				},
+				{
+					"name": "FetchMagasinRowID"
+				},
+				{
+					"name": "LookupIDate"
+				},
+				{
+					"name": "FetchIDate"
+				},
+				{
+					"name": "CastIntIDVente"
+				},
+				{
+					"name": "UpdateInsertDataRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID_Vente as string,",
+				"          Date_Vente as date,",
+				"          ID_Client as string,",
+				"          ID_Produit as string,",
+				"          Quantite as decimal(18,0),",
+				"          Prix_Unitaire as decimal(18,0),",
+				"          Mode_Paiement as string,",
+				"          ID_Magasin as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ODSVentes",
+				"source(output(",
+				"          ClientRowID as integer,",
+				"          ID_Client as string,",
+				"          Nom_Client as string,",
+				"          Prenom_Client as string,",
+				"          Email as string,",
+				"          Telephone as integer,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DWHClients",
+				"source(output(",
+				"          ProduitRowID as integer,",
+				"          ID_Produit as string,",
+				"          Nom_Produit as string,",
+				"          Categorie as string,",
+				"          Prix_Achat as decimal(18,0),",
+				"          Prix_Vente as decimal(18,0),",
+				"          Stock_Disponible as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DWHProduits",
+				"source(output(",
+				"          MagasinRowID as integer,",
+				"          ID_Magasin as string,",
+				"          Nom_Magasin as string,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DWHMagasins",
+				"source(output(",
+				"          idDate as integer,",
+				"          Date_cal as date,",
+				"          Year as integer,",
+				"          Month as integer,",
+				"          Day as integer,",
+				"          Week as integer,",
+				"          Quarter as integer,",
+				"          DayOfWeek as integer,",
+				"          DayName as string,",
+				"          MonthName as string,",
+				"          IsWeekend as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DWHCalendrier",
+				"ODSVentes, DWHClients lookup(ODSVentes@ID_Client == DWHClients@ID_Client,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupClientRowID",
+				"LookupClientRowID select(mapColumn(",
+				"          ID_Vente,",
+				"          Date_Vente,",
+				"          ID_Produit,",
+				"          Quantite,",
+				"          Prix_Unitaire,",
+				"          Mode_Paiement,",
+				"          ID_Magasin,",
+				"          ClientRowID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FetchClientRowID",
+				"FetchClientRowID, DWHProduits lookup(FetchClientRowID@ID_Produit == DWHProduits@ID_Produit,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupProduitRowID",
+				"LookupProduitRowID select(mapColumn(",
+				"          ID_Vente,",
+				"          Date_Vente,",
+				"          Quantite,",
+				"          Prix_Unitaire,",
+				"          Mode_Paiement,",
+				"          ID_Magasin,",
+				"          ClientRowID,",
+				"          ProduitRowID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FetchProduitRowID",
+				"FetchProduitRowID, DWHMagasins lookup(FetchProduitRowID@ID_Magasin == DWHMagasins@ID_Magasin,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupMagasinRowID",
+				"LookupMagasinRowID select(mapColumn(",
+				"          ID_Vente,",
+				"          Date_Vente,",
+				"          Quantite,",
+				"          Prix_Unitaire,",
+				"          Mode_Paiement,",
+				"          ClientRowID,",
+				"          ProduitRowID,",
+				"          MagasinRowID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FetchMagasinRowID",
+				"FetchMagasinRowID, DWHCalendrier lookup(Date_Vente == Date_cal,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupIDate",
+				"LookupIDate select(mapColumn(",
+				"          ID_Vente,",
+				"          idDate,",
+				"          ClientRowID,",
+				"          ProduitRowID,",
+				"          MagasinRowID,",
+				"          Quantite,",
+				"          Prix_Unitaire,",
+				"          Mode_Paiement",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FetchIDate",
+				"FetchIDate derive(IDVente = toInteger(dropLeft(ID_Vente,1))) ~> CastIntIDVente",
+				"CastIntIDVente alterRow(upsertIf(1==1)) ~> UpdateInsertDataRows",
+				"UpdateInsertDataRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          IDVente as integer,",
+				"          IDate as integer,",
+				"          ClientRowID as integer,",
+				"          ProduitRowID as integer,",
+				"          MagasinRowID as integer,",
+				"          Quantite as integer,",
+				"          Prix_Unitaire as integer,",
+				"          Mode_Paiement as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['IDVente'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          IDVente,",
+				"          IDate = idDate,",
+				"          ClientRowID,",
+				"          ProduitRowID,",
+				"          MagasinRowID,",
+				"          Quantite,",
+				"          Prix_Unitaire,",
+				"          Mode_Paiement",
+				"     )) ~> DWHFactVentes"
+			]
+		}
+	}
+}

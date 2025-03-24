@@ -1,0 +1,68 @@
+{
+	"name": "FlowDWHMagasin",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_Magasins",
+						"type": "DatasetReference"
+					},
+					"name": "ODSMagasins"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_Magasins",
+						"type": "DatasetReference"
+					},
+					"name": "DWHMagasins"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UpdateInsertODSRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID_Magasin as string,",
+				"          Nom_Magasin as string,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ODSMagasins",
+				"ODSMagasins alterRow(upsertIf(1==1)) ~> UpdateInsertODSRows",
+				"UpdateInsertODSRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          MagasinRowID as integer,",
+				"          ID_Magasin as string,",
+				"          Nom_Magasin as string,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['ID_Magasin'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID_Magasin,",
+				"          Nom_Magasin,",
+				"          Ville,",
+				"          Pays",
+				"     )) ~> DWHMagasins"
+			]
+		}
+	}
+}

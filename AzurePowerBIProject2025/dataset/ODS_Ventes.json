@@ -1,0 +1,57 @@
+{
+	"name": "ODS_Ventes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ODS(Operational Data Store)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID_Vente",
+				"type": "varchar"
+			},
+			{
+				"name": "Date_Vente",
+				"type": "date"
+			},
+			{
+				"name": "ID_Client",
+				"type": "varchar"
+			},
+			{
+				"name": "ID_Produit",
+				"type": "varchar"
+			},
+			{
+				"name": "Quantite",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Prix_Unitaire",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Mode_Paiement",
+				"type": "varchar"
+			},
+			{
+				"name": "ID_Magasin",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "ODS",
+			"table": "ventes"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

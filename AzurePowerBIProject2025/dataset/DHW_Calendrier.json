@@ -1,0 +1,72 @@
+{
+	"name": "DHW_Calendrier",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW(DataWareHouse)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "idDate",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Date_cal",
+				"type": "date"
+			},
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Day",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Week",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Quarter",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DayOfWeek",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DayName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MonthName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsWeekend",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH",
+			"table": "CALENDRIER"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

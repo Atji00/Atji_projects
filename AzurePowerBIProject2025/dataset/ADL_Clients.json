@@ -1,0 +1,47 @@
+{
+	"name": "ADL_Clients",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADL(AzureDataLake)-Tables"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "clients",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "clients.xls",
+				"fileSystem": "datalake"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,78 @@
+{
+	"name": "FlowDWHClient",
+	"properties": {
+		"description": "Inject transformed data from ODS table Clients to DWH table clients",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_Clients",
+						"type": "DatasetReference"
+					},
+					"name": "ODSClients"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DWH_Clients",
+						"type": "DatasetReference"
+					},
+					"name": "DWHClients"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UpdateInsertODSRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID_Client as string,",
+				"          Nom_Client as string,",
+				"          Prenom_Client as string,",
+				"          Email as string,",
+				"          Telephone as integer,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ODSClients",
+				"ODSClients alterRow(upsertIf(1==1)) ~> UpdateInsertODSRows",
+				"UpdateInsertODSRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ClientRowID as integer,",
+				"          ID_Client as string,",
+				"          Nom_Client as string,",
+				"          Prenom_Client as string,",
+				"          Email as string,",
+				"          Telephone as integer,",
+				"          Ville as string,",
+				"          Pays as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['ID_Client'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID_Client,",
+				"          Nom_Client,",
+				"          Prenom_Client,",
+				"          Email,",
+				"          Telephone,",
+				"          Ville,",
+				"          Pays",
+				"     )) ~> DWHClients"
+			]
+		}
+	}
+}

@@ -1,0 +1,60 @@
+{
+	"name": "DWH_FactVentes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW(DataWareHouse)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "IDVente",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IDate",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ClientRowID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProduitRowID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MagasinRowID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Quantite",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Prix_Unitaire",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Mode_Paiement",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH",
+			"table": "Fact_ventes"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

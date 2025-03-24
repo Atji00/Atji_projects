@@ -1,0 +1,55 @@
+{
+	"name": "DWH_Produits",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW(DataWareHouse)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ProduitRowID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_Produit",
+				"type": "varchar"
+			},
+			{
+				"name": "Nom_Produit",
+				"type": "varchar"
+			},
+			{
+				"name": "Categorie",
+				"type": "varchar"
+			},
+			{
+				"name": "Prix_Achat",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Prix_Vente",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Stock_Disponible",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH",
+			"table": "Dim_produits"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,37 @@
+{
+	"name": "PipeDWHDepense",
+	"properties": {
+		"activities": [
+			{
+				"name": "FlowDWHDepense",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FlowDWHDepense",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "DWHPipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-04T15:35:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,42 @@
+{
+	"name": "DWH_Magasins",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FricSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW(DataWareHouse)-Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "MagasinRowID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_Magasin",
+				"type": "varchar"
+			},
+			{
+				"name": "Nom_Magasin",
+				"type": "varchar"
+			},
+			{
+				"name": "Ville",
+				"type": "varchar"
+			},
+			{
+				"name": "Pays",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "DWH",
+			"table": "Dim_magasins"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
