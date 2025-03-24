@@ -4,4 +4,6 @@ This repository records my differents projects in python, Spark/Scala, PySpark
 - Machine learning, Predictive Analysis with python
 - Data processing with Spark_Scala on Databricks
 - Built Application with Spark Scala Class on Intellij
+- Data Engineering with Spark and Azure Data factory
+- Create Dashboard with Streamlit & PowerBI Desktop
 
