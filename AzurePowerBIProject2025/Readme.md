@@ -9,6 +9,5 @@
 
 ## Part 2: Build the Dashboard connecting PowerBI Desktop to my Sql Server
 - Connect and process Columns with PowerQuery
-- Create DAX measures (KPI) for Sales
-- Build the differents pages of my Dashboard 
-![Page Accueil du Dashboard](Capture d'écran 2025-03-24 204344.png)
+- Create DAX measures (KPI) for Sales 
+![Page Accueil du Dashboard](WelcomePage.png)
