@@ -5,7 +5,7 @@
 - Azure SqlServer Service
 - Azure SqlDatabase Service
 - Azure DataFactory Service
-![Texte alternatif](chemin/vers/votre/image.png)
+![Texte alternatif](FricAzureArchitecture-ETL.drawio.png)
 
 ## Part 2: Build the Dashboard connecting PowerBI Desktop to my Sql Server
 ![Texte alternatif](chemin/vers/votre/image.png)
