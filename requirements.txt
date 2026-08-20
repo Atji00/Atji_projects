@@ -53,6 +53,7 @@ colorama==0.4.6
     # via
     #   click
     #   ipython
+    #   pytest
 colorlover==0.3.0
     # via cufflinks
 comm==0.2.3
@@ -122,6 +123,8 @@ imbalanced-learn==0.14.2
     # via credit-scoring-modelling (pyproject.toml)
 importlib-metadata==9.0.0
     # via mlflow-skinny
+iniconfig==2.3.0
+    # via pytest
 ipython==9.16.1
     # via
     #   cufflinks
@@ -226,6 +229,7 @@ packaging==26.3
     #   mlflow-skinny
     #   mlflow-tracing
     #   plotly
+    #   pytest
     #   skops
     #   statsmodels
     #   streamlit
@@ -250,6 +254,12 @@ plotly==6.9.0
     #   credit-scoring-modelling (pyproject.toml)
     #   chart-studio
     #   cufflinks
+pluggy==1.6.0
+    # via pytest
+polars==1.43.2
+    # via credit-scoring-modelling (pyproject.toml)
+polars-runtime-32==1.43.2
+    # via polars
 prettytable==3.18.0
     # via skops
 prompt-toolkit==3.0.53
@@ -292,8 +302,11 @@ pygments==2.21.0
     # via
     #   ipython
     #   ipython-pygments-lexers
+    #   pytest
 pyparsing==3.3.2
     # via matplotlib
+pytest==9.1.1
+    # via credit-scoring-modelling (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
     #   graphene

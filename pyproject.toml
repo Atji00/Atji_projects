@@ -22,15 +22,28 @@ dependencies = [
     "imbalanced-learn>=0.14.0",
     "openpyxl>=3.1.5",
     "python-dotenv>=1.2.2",
+    "pytest>=9.1.1",
+    "polars>=1.43.2",
 ]
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+addopts = "-v --html=tests/reports/pytest-report.html --self-contained-html"
+
 [dependency-groups]
 dev = [
     "pytest>=8.0",
     "ruff>=0.5",
     "black>=24.0",
+    "pytest-html>=4.2.0",
 ]
