@@ -38,7 +38,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 
-addopts = "-v --html=tests/reports/pytest-report.html --self-contained-html"
+addopts = "-v"
 
 [dependency-groups]
 dev = [

@@ -3,10 +3,11 @@ import pandas as pd
 
 def information(data: pd.DataFrame, metadata:dict) -> pd.DataFrame:
 
-    """Generate a summary of the dataset's structure and missing values.
+    """_____Docstring_____
+    Generate a summary of the dataset's structure and missing values.
  
- This function aims to Generate a summary of the dataset's structure: types, uniques values,
- Not Available and missing values.
+    This function aims to Generate a summary of the dataset's structure: types, uniques values,
+    Not Available and missing values.
 
     Parameters
     ----------
@@ -18,7 +19,7 @@ def information(data: pd.DataFrame, metadata:dict) -> pd.DataFrame:
 
     Returns
     -------
-    pl.DataFrame
+    pd.DataFrame
         A summary DataFrame containing each variable's name, data type,
         number of unique values, number and percentage of missing values,
         and its description.
