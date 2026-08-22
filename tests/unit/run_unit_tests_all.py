@@ -42,9 +42,9 @@ def main() -> None:
 
             print(f"\nFAILED: {test_file}")
 
-        if failed:
+    if failed:
 
-            sys.exit(1)
+        sys.exit(1)
 
     print("\nAll test reports have been generated.")
 

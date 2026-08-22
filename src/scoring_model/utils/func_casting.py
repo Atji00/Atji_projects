@@ -1,8 +1,9 @@
 import pandas as pd
 
 
-def casting(variable: pd.Series, numeric_threshold: float = 0.99, datetime_threshold: float = 0.95,
-            cardinality_relative: float = 0.05, cardinality_absolute: int = 12) -> pd.Series:
+def casting(variable: pd.Series, boolean_threshold: float = 0.95, numeric_threshold: float = 0.99, 
+            datetime_threshold: float = 0.95, cardinality_relative: float = 0.05, 
+            cardinality_absolute: int = 12) -> pd.Series:
 
     """---Cast a variable into an appropriate data type----
 
@@ -18,11 +19,17 @@ def casting(variable: pd.Series, numeric_threshold: float = 0.99, datetime_thres
     ----------
     variable : pandas.Series Variable from raw data to be cast.
 
-    numeric_threshold : float, default=0.99
+    boolean_threshold : float, default=0.95
         Minimum proportion of non-missing values that must be
-        successfully converted to a numeric type for the conversion
-        to be applied. Values that cannot be converted are coerced
+        successfully converted to a boolean type for the conversion
+        to be applied. Values that cannot be mapped are coerced
         to missing values during the conversion.
+
+    numeric_threshold : float, default=0.99
+            Minimum proportion of non-missing values that must be
+            successfully converted to a numeric type for the conversion
+            to be applied. Values that cannot be converted are coerced
+            to missing values during the conversion.
 
     datetime_threshold : float, default=0.95
         Minimum proportion of non-missing values that must be
@@ -89,42 +96,27 @@ def casting(variable: pd.Series, numeric_threshold: float = 0.99, datetime_thres
         # Boolean
         # ==============================================================
 
-        boolean_values = {
-                            "true",
-                            "false",
-                            "vrai",
-                            "faux",
-                            "oui",
-                            "non",
-                            "yes",
-                            "no",
-                        }
+        mapping = {
+                    "true": True,
+                    "vrai": True,
+                    "oui": True,
+                    "yes": True,
+                    "false": False,
+                    "faux": False,
+                    "non": False,
+                    "no": False,
+                }
 
-        unique_values = set(non_null.astype("string")
-                                    .str.strip()
-                                    .str.lower()
-                                    .unique()
-                            )
-
-        if unique_values and unique_values.issubset(boolean_values):
-
-            mapping = {
-                        "true": True,
-                        "vrai": True,
-                        "oui": True,
-                        "yes": True,
-                        "false": False,
-                        "faux": False,
-                        "non": False,
-                        "no": False,
-                    }
-
-            result = (variable.astype("string")
+        boolean = (variable.astype("string")
                               .str.strip()
                               .str.lower()
                               .map(mapping)
                               .astype("boolean")
                     )
+
+        boolean_rate = boolean[non_missing].notna().mean()
+
+        if boolean_rate >= boolean_threshold:
 
             print(
                     f"CASTED VARIABLE: {variable_name}\n"
@@ -132,10 +124,11 @@ def casting(variable: pd.Series, numeric_threshold: float = 0.99, datetime_thres
                     f"Number of observations: {len(variable)}\n"
                     f"Number of non-missing values: {non_missing.sum()}\n"
                     f"Detected type: Boolean\n"
-                    f"Result dtype: {result.dtype}\n"
+                    f"Conversion rate: {boolean_rate:.2%}\n"
+                    f"Result dtype: {boolean.dtype}\n"
                 )
 
-            return result
+            return boolean
 
         # ==============================================================
         # Numeric
