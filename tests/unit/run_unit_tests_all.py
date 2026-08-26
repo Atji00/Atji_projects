@@ -6,11 +6,26 @@ TESTS_DIR = Path(__file__).parent.parent
 REPORTS_DIR = TESTS_DIR / "unit_tests_reports"
 
 
-def main() -> None:
+def main(run_all: bool = True, test_name: str | None = None) -> None:
 
     REPORTS_DIR.mkdir(exist_ok=True)
 
-    test_files = sorted(TESTS_DIR.rglob("test_*.py"))
+    if run_all:
+
+        test_files = sorted(TESTS_DIR.rglob("test_*.py"))
+
+    else:
+
+        if not test_name:
+
+            test_name = input("Enter the file name to be tested (ex: test_example.py) : ").strip()
+
+        test_files = sorted(TESTS_DIR.rglob(test_name))
+
+        if not test_files:
+
+            print(f"\nNo files found ! : {test_name}")
+            sys.exit(1)
 
     failed = False
 
@@ -50,4 +65,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(False)
