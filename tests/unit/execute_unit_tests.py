@@ -6,7 +6,7 @@ TESTS_DIR = Path(__file__).parent.parent
 REPORTS_DIR = TESTS_DIR / "unit_tests_reports"
 
 
-def main(run_all: bool = True, test_name: str | None = None) -> None:
+def execute_test(run_all: bool = True, test_name: str | None = None) -> None:
 
     REPORTS_DIR.mkdir(exist_ok=True)
 
@@ -18,7 +18,7 @@ def main(run_all: bool = True, test_name: str | None = None) -> None:
 
         if not test_name:
 
-            test_name = input("Enter the file name to be tested (ex: test_example.py) : ").strip()
+            test_name = input("Enter filename to be tested (ex: test_example.py) : ").strip()
 
         test_files = sorted(TESTS_DIR.rglob(test_name))
 
@@ -39,7 +39,7 @@ def main(run_all: bool = True, test_name: str | None = None) -> None:
         print(f"Report : {report_path}")
         print(f"{'=' * 70}\n")
 
-        result = subprocess.run(  # noqa: PLW1510
+        result = subprocess.run(
                                     [
                                         sys.executable,
                                         "-m",
@@ -65,4 +65,4 @@ def main(run_all: bool = True, test_name: str | None = None) -> None:
 
 
 if __name__ == "__main__":
-    main(False)
+    execute_test(False)

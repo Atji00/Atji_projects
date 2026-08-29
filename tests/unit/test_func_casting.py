@@ -4,23 +4,8 @@ import pytest
 
 from scoring_model.utils.func_casting import casting
 
-"""___Tests unitaires pour la fonction casting__
-
-Organisation des tests, dans l'ordre des branches de la fonction :
-1. Série vide / entièrement manquante
-2. Colonnes déjà typées correctement (int, float, bool, datetime, category)
-3. Colonnes object -> détection booléenne
-4. Colonnes object -> conversion numérique (avec seuil)
-5. Colonnes object -> conversion datetime (avec seuil)
-6. Colonnes object -> category vs string (cardinalité)
-7. Autres dtypes (non gérés) -> inchangés
-8. Cas transverses (nom conservé, valeurs manquantes mélangées, seuils personnalisés)
-
-"""
-
-
 # ----------------------------------------------------------------------
-# 1. Série vide / entièrement manquante
+# Empty series
 # ----------------------------------------------------------------------
 
 class TestEmptyOrAllMissing:
@@ -37,7 +22,7 @@ class TestEmptyOrAllMissing:
 
 
 # ----------------------------------------------------------------------
-# 2. Colonnes déjà typées correctement
+# 2. Columns already typed
 # ----------------------------------------------------------------------
 
 class TestAlreadyTypedColumns:
@@ -70,7 +55,7 @@ class TestAlreadyTypedColumns:
 
 
 # ----------------------------------------------------------------------
-# 3. Détection booléenne (colonnes object)
+# 3. Detect boolean columns
 # ----------------------------------------------------------------------
 
 class TestBooleanDetection:
@@ -80,7 +65,7 @@ class TestBooleanDetection:
         ["Vrai", "Faux", "vrai"],
         ["oui", "non", "oui"],
         ["Yes", "No", "yes"],
-        [" true ", "FALSE", "True"],   # espaces + casse mélangée
+        [" true ", "FALSE", "True"]
     ])
     def test_various_boolean_spellings_are_detected(self, values):
         serie = pd.Series(values, dtype="object")
@@ -105,7 +90,7 @@ class TestBooleanDetection:
 
 
 # ----------------------------------------------------------------------
-# 4. Conversion numérique (colonnes object)
+# 4. Numeric Conversion
 # ----------------------------------------------------------------------
 
 class TestNumericConversion:
@@ -147,7 +132,7 @@ class TestNumericConversion:
 
 
 # ----------------------------------------------------------------------
-# 5. Conversion datetime (colonnes object)
+# 5. Datetime Conversion
 # ----------------------------------------------------------------------
 
 class TestDatetimeConversion:
@@ -172,7 +157,7 @@ class TestDatetimeConversion:
 
 
 # ----------------------------------------------------------------------
-# 6. Category vs String (cardinalité)
+# 6. Category vs String (cardinality)
 # ----------------------------------------------------------------------
 
 class TestCategoryVsString:
@@ -184,7 +169,7 @@ class TestCategoryVsString:
         assert isinstance(result.dtype, pd.CategoricalDtype)
 
     def test_low_relative_cardinality_becomes_category(self):
-        # 100 lignes, seulement 3 valeurs uniques -> ratio 0.03 < 0.05
+        
         values = ["A"] * 15 + ["B"] * 8 + ["C"] * 11
         serie = pd.Series(values, name="grp", dtype="object")
         result = casting(serie)
@@ -210,7 +195,7 @@ class TestCategoryVsString:
 
 
 # ----------------------------------------------------------------------
-# 7. Autres dtypes non gérés
+# 7. Others types not handled
 # ----------------------------------------------------------------------
 
 class TestOtherDtypes:
@@ -222,7 +207,7 @@ class TestOtherDtypes:
 
 
 # ----------------------------------------------------------------------
-# 8. Cas transverses
+# 8. Immuability of series 'name' and original data
 # ----------------------------------------------------------------------
 
 class TestCrossCutting:
