@@ -25,6 +25,7 @@ dependencies = [
     "pytest>=9.1.1",
     "polars>=1.43.2",
     "ipykernel>=7.3.0",
+    "pyyaml>=6.0.3",
 ]
 
 [build-system]

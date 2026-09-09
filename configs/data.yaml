@@ -1,0 +1,162 @@
+data:
+
+  raw:
+
+    formats:
+
+      csv:
+        separator: ";"
+        encoding: utf-8
+
+      txt:
+        separator: "\t"
+        encoding: utf-8
+
+    loading:
+
+      max_file_size_mb: 500
+      chunksize: 100000
+
+  target: y
+
+
+  validation:
+
+    strict: true
+
+    numerical:
+
+      age:
+        type: int64
+        nullable: true
+        min: 18
+        max: 100
+
+      balance:
+        type: int64
+        nullable: true
+
+      day:
+        type: int64
+        nullable: true
+        min: 1
+        max: 31
+
+      duration:
+        type: int64
+        nullable: true
+        min: 0
+
+      campaign:
+        type: int64
+        nullable: true
+        min: 1
+
+      pdays:
+        type: int64
+        nullable: true
+        min: -1
+
+      previous:
+        type: int64
+        nullable: true
+        min: 0
+
+    categorical:
+
+      job:
+        type: string
+        nullable: true
+        allowed:
+          - admin.
+          - blue-collar
+          - entrepreneur
+          - housemaid
+          - management
+          - retired
+          - self-employed
+          - services
+          - student
+          - technician
+          - unemployed
+          - unknown
+
+      marital:
+        type: string
+        nullable: true
+        allowed:
+          - married
+          - single
+          - divorced
+
+      education:
+        type: string
+        nullable: true
+        allowed:
+          - primary
+          - secondary
+          - tertiary
+          - unknown
+
+      default:
+        type: string
+        nullable: true
+        allowed:
+          - yes
+          - no
+
+      housing:
+        type: string
+        nullable: true
+        allowed:
+          - yes
+          - no
+
+      loan:
+        type: string
+        nullable: true
+        allowed:
+          - yes
+          - no
+
+      contact:
+        type: string
+        nullable: true
+        allowed:
+          - cellular
+          - telephone
+          - unknown
+
+      month:
+        type: string
+        nullable: true
+        allowed:
+          - jan
+          - feb
+          - mar
+          - apr
+          - may
+          - jun
+          - jul
+          - aug
+          - sep
+          - oct
+          - nov
+          - dec
+
+      poutcome:
+        type: string
+        nullable: true
+        allowed:
+          - failure
+          - other
+          - success
+          - unknown
+
+    target:
+      y:
+        type: string
+        nullable: false
+        allowed:
+          - yes
+          - no

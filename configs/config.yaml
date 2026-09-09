@@ -1,0 +1,12 @@
+# ------------------------------------------------------------
+# Project Description
+
+project:
+  name: credit-scoring-modeling
+  version: "1.0.0"
+  description: "Build a ML credit default prediction project end-to-end"
+
+# ------------------------------------------------------------
+# Replicability
+
+rd_seed: 42

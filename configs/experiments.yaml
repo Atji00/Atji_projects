@@ -1,0 +1,46 @@
+
+# ------------------------------------------------------------
+# MLflow Configuration
+# ------------------------------------------------------------
+
+mlflow:
+
+  enabled: true
+
+  
+  tracking:
+    uri: "http://127.0.0.1:8080"
+
+
+  experiment:
+
+    name: "Credit Scoring Modeling"
+
+    description: >
+      Predict Credit default using financial information 
+
+    tags:
+      project_name: "Credit Scoring Modeling"
+      team: "My team ATJI"
+      project_quarter: "Q4-2026"
+
+
+  run:
+
+    log_parameters: true
+
+    log_metrics: true
+
+    log_models: true
+
+    log_artifacts: true
+
+    log_tags: true
+
+
+  registry:
+
+    enabled: true
+
+    model_name: "credit-scoring-model"
+

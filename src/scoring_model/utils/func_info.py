@@ -3,7 +3,7 @@ import pandas as pd
 
 def information(data: pd.DataFrame, metadata:dict) -> pd.DataFrame:
 
-    """_____Docstring_____
+    """_____Docstring_____\n
     Generate a summary of the dataset's structure and missing values.
  
     This function aims to Generate a summary of the dataset's structure: types, uniques values,
