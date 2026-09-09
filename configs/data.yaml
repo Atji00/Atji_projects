@@ -22,9 +22,7 @@ data:
 
   validation:
 
-    strict: true
-
-    numerical:
+    columns:
 
       age:
         type: int64
@@ -61,8 +59,6 @@ data:
         type: int64
         nullable: true
         min: 0
-
-    categorical:
 
       job:
         type: string
