@@ -14,8 +14,9 @@ class ProjectPaths:
         self.src = self.root / "src"
         self.tests = self.root / "tests"
 
-        self.raw_data = self.data / "raw"
-        self.processed_data = self.data / "processed"
+        self.raw = self.data / "raw"
+        self.processed = self.data / "processed"
+        self.intermediate = self.data / "intermediate"
 
         self.scoring_model = self.src / "scoring_model"
 
