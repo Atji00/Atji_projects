@@ -14,6 +14,30 @@ training:
 
     stratify: true
 
+# ------------------------------------------------------------
+# Preprocessing
+# ------------------------------------------------------------
+
+  preprocessing:
+
+    numerical:
+
+      scaler: StandardScaler
+
+      parameters:
+        with_mean: true
+        with_std: true
+
+
+    categorical:
+
+      encoder: OneHotEncoder
+
+      parameters:
+        handle_unknown: ignore
+        sparse_output: false
+        drop: first
+
 
   # ----------------------------------------------------------
   # Class Imbalance / Sampling
