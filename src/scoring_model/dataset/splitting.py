@@ -6,25 +6,21 @@ from scoring_model.runtime.config import ConfigLoader
 from scoring_model.runtime.paths import ProjectPaths
 
 
-class DataSplitter:
+class TrainTestSplitter:
     """\nSplit casted data into train and test datasets.\n"""
 
-    def __init__(
-                    self,
-                    training_config: str = "training.yaml",
-                    data_config: str = "data.yaml",
-                    config: str = "config.yaml",
+    def __init__(self, training_config: str = "training.yaml",
+                       data_config: str = "data.yaml",
+                       config: str = "config.yaml",
                 ) -> None:
 
-        config_loader = ConfigLoader()
-
-        self.training_config = config_loader.load_yaml(training_config)
-        self.data_config = config_loader.load_yaml(data_config)
-        self.config = config_loader.load_yaml(config)
+        self.training_config = ConfigLoader().load_yaml(training_config)
+        self.data_config = ConfigLoader().load_yaml(data_config)
+        self.config = ConfigLoader().load_yaml(config)
 
         self.split_config = self.training_config["training"]["split"]
         self.target_name = self.data_config["data"]["target"]
-        self.random_state = self.config["project"]["random_state"]
+        self.random_state = self.config["rd_seed"]
 
         self.paths = ProjectPaths()
 
@@ -60,17 +56,17 @@ class DataSplitter:
         train_dir.mkdir(parents=True, exist_ok=True)
         test_dir.mkdir(parents=True, exist_ok=True)
 
-        X_train.to_parquet(train_dir / "features_train.parquet", index=False)
-        X_test.to_parquet(test_dir / "features_test.parquet", index=False)
+        X_train.to_parquet(train_dir / "X_train_unprocessed.parquet", index=False)
+        X_test.to_parquet(test_dir / "X_test_unprocessed.parquet", index=False)
 
         (
             y_train.to_frame(name=self.target_name)
-                   .to_parquet(train_dir / "target_train.parquet", index=False)
+                   .to_parquet(train_dir / "y_train.parquet", index=False)
         )
 
         (
             y_test.to_frame(name=self.target_name)
-                  .to_parquet(test_dir / "target_test.parquet", index=False)
+                  .to_parquet(test_dir / "y_test.parquet", index=False)
         )
 
 

@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pandas as pd
 
 from scoring_model.runtime.config import ConfigLoader
@@ -49,7 +47,7 @@ class RawDataLoader:
 
     def load(self, filename: str) -> pd.DataFrame:
 
-        path = self.paths.raw_data / filename
+        path = self.paths.raw / filename
 
         if not path.is_file():
             raise FileNotFoundError(

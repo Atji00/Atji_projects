@@ -1,4 +1,12 @@
+import warnings
+
 import pandas as pd
+
+warnings.filterwarnings(
+                            "ignore",
+                            message="Could not infer format.*",
+                            category=UserWarning
+                        )
 
 
 def casting(variable: pd.Series, boolean_threshold: float = 0.95, numeric_threshold: float = 0.99, 

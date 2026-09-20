@@ -152,7 +152,7 @@ def impute_missings(
                                                 upper=max(reverse_mapping),
                                               )
                                          .astype("int64")
-                                         .map(lambda x: reverse_mapping.get(x, x))
+                                         .map(lambda x: reverse_mapping.get(x, x))  # noqa: B023
                             )               
 
     return df

@@ -6,7 +6,7 @@ class FeatureEngineer:
     def __init__(self, data: pd.DataFrame) -> None:
         self.data = data.copy()
 
-    def transform(self) -> pd.DataFrame:
+    def compute(self) -> pd.DataFrame:
 
         self.data["total_contacts"] = self.data["campaign"] + self.data["previous"]
 

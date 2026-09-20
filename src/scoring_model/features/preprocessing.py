@@ -9,7 +9,7 @@ from scoring_model.runtime.paths import ProjectPaths
 from .selected_features import CATEGORICAL_FEATURES, NUMERICAL_FEATURES
 
 
-class DataProcessor:
+class Processor:
     """
     Preprocess selected numerical and categorical features.
     """
@@ -41,7 +41,7 @@ class DataProcessor:
 
         scaler_parameters = numerical_config.get("parameters",{})
 
-        scaler_class = getattr(preprocessing, scaler_name,)
+        scaler_class = getattr(preprocessing, scaler_name)
 
         scaler = scaler_class(**scaler_parameters)
 
@@ -69,7 +69,7 @@ class DataProcessor:
                                                         self.categorical_features,
                                                     ),
                                                 ],
-                                    remainder="drop",
+                                    remainder="drop"
                                 )
 
     def fit_transform(self) -> pd.DataFrame:
@@ -82,12 +82,19 @@ class DataProcessor:
 
         processor_path = (self.paths.features / "processor_fitted.joblib")
 
-        joblib.dump(self.processor, processor_path)
-
         feature_names = (self.processor.get_feature_names_out())
 
-        return pd.DataFrame(
-                                transformed_data,
-                                columns=feature_names,
-                                index=self.data.index,
-                            )
+        data_processed = pd.DataFrame(
+                                        transformed_data,
+                                        columns=feature_names,
+                                        index=self.data.index,
+                                    )
+
+        joblib.dump(self.processor, processor_path)
+
+        output_dir = self.paths.processed / "processed_train"
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        data_processed.to_parquet(output_dir / "X_train_processed.parquet", index=False)
+
+        return data_processed

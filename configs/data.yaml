@@ -64,95 +64,95 @@ data:
         type: string
         nullable: true
         allowed:
-          - admin.
-          - blue-collar
-          - entrepreneur
-          - housemaid
-          - management
-          - retired
-          - self-employed
-          - services
-          - student
-          - technician
-          - unemployed
-          - unknown
+          - "admin."
+          - "blue-collar"
+          - "entrepreneur"
+          - "housemaid"
+          - "management"
+          - "retired"
+          - "self-employed"
+          - "services"
+          - "student"
+          - "technician"
+          - "unemployed"
+          - "unknown"
 
       marital:
         type: string
         nullable: true
         allowed:
-          - married
-          - single
-          - divorced
+          - "married"
+          - "single"
+          - "divorced"
 
       education:
         type: string
         nullable: true
         allowed:
-          - primary
-          - secondary
-          - tertiary
-          - unknown
+          - "primary"
+          - "secondary"
+          - "tertiary"
+          - "unknown"
 
       default:
         type: string
         nullable: true
         allowed:
-          - yes
-          - no
+          - "yes"
+          - "no"
 
       housing:
         type: string
         nullable: true
         allowed:
-          - yes
-          - no
+          - "yes"
+          - "no"
 
       loan:
         type: string
         nullable: true
         allowed:
-          - yes
-          - no
+          - "yes"
+          - "no"
 
       contact:
         type: string
         nullable: true
         allowed:
-          - cellular
-          - telephone
-          - unknown
+          - "cellular"
+          - "telephone"
+          - "unknown"
 
       month:
         type: string
         nullable: true
         allowed:
-          - jan
-          - feb
-          - mar
-          - apr
-          - may
-          - jun
-          - jul
-          - aug
-          - sep
-          - oct
-          - nov
-          - dec
+          - "jan"
+          - "feb"
+          - "mar"
+          - "apr"
+          - "may"
+          - "jun"
+          - "jul"
+          - "aug"
+          - "sep"
+          - "oct"
+          - "nov"
+          - "dec"
 
       poutcome:
         type: string
         nullable: true
         allowed:
-          - failure
-          - other
-          - success
-          - unknown
+          - "failure"
+          - "other"
+          - "success"
+          - "unknown"
 
     target:
       y:
         type: string
         nullable: false
         allowed:
-          - yes
-          - no
+          - "yes"
+          - "no"
