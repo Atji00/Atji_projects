@@ -4,18 +4,23 @@ from matplotlib.figure import Figure
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
 from scoring_model.runtime.paths import ProjectPaths
+from scoring_model.scripts.predict import MODEL_NAME
 
 
 class ConfusionMatrix:
 
-    def __init__(self, y_test: pd.Series, y_pred: pd.Series, model_name: str) -> None:
+    def __init__(self) -> None:
 
-        self.y_test = y_test
-        self.y_pred = y_pred
-        self.name = model_name
-
+        self.name = MODEL_NAME
         self.paths = ProjectPaths()
+
+        self.ypred_dir = self.paths.processed / "processed_test"
+        self.ytest_dir = self.paths.intermediate / "unprocessed_test"
         self.output_dir = self.paths.figures / self.name
+
+        self.y_test = pd.read_parquet(self.ytest_dir / "y_test.parquet")
+        self.y_pred = pd.read_parquet(self.ypred_dir / "y_predicted.parquet")
+    
 
     def build(self) -> Figure:
 

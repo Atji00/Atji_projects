@@ -8,7 +8,7 @@ from scoring_model.utils.func_casting import casting
 from scoring_model.utils.func_missings_imputing import impute_missings
 
 
-def orchestration() -> None:
+def train_orchestration() -> None:
 
     def stage(step_name: str, step: int, total_step: int = 8) -> None:
 
@@ -47,7 +47,7 @@ def orchestration() -> None:
 
     # 5. Splitting in Train/Test
     stage('Splitting in Train/Test', 5)
-    X_train, X_test, y_train, y_test = TrainTestSplitter().split(data)  # noqa: RUF059
+    X_train, _, y_train, _ = TrainTestSplitter().split(data)
     stage_status()
 
     # 6. Imputing NA/None in X_train
@@ -72,4 +72,4 @@ def orchestration() -> None:
     
 if __name__ == "__main__":
 
-    orchestration()
+    train_orchestration()

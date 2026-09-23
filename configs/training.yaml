@@ -49,27 +49,3 @@ training:
 
     method: smotenc
 
-
-  # ----------------------------------------------------------
-  # Cross-Validation
-  # ----------------------------------------------------------
-
-  cross_validation:
-
-    strategy: stratified_kfold
-
-    n_splits: 10
-
-    shuffle: true
-
-
-  # ----------------------------------------------------------
-  # Model Selection
-  # ----------------------------------------------------------
-
-  model_selection:
-
-    refit: true
-
-    primary_metric: roc_auc
-

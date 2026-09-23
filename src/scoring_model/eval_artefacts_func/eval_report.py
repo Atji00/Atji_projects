@@ -1,64 +1,96 @@
-from pathlib import Path
+import json
+
+from scoring_model.runtime.paths import ProjectPaths
+from scoring_model.scripts.predict import MODEL_NAME
 
 
 class EvaluationReport:
 
-    def __init__(
-        self,
-        output_path: Path,
-        model_name: str,
-    ) -> None:
+    def __init__(self) -> None:
 
-        self.output_path = output_path
-        self.model_name = model_name
+        self.paths = ProjectPaths()
+        self.name = MODEL_NAME
 
-    def build(
-        self,
-        metrics: dict[str, float],
-    ) -> None:
+        self.metrics_dir = self.paths.metrics / self.name
+        self.figures_dir = self.paths.figures / self.name
+        self.output_dir = self.paths.reports / "eval_report.md"
+
+    def _load_classification_report(self) -> dict:
+
+        path = self.metrics_dir / f"classification_report_{self.name}.json"
+
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def build(self) -> None:
+
+        classification_report = (self._load_classification_report())
 
         content = f"""# Model Evaluation Report
 
 ## Model
 
-- Model: {self.model_name}
+- Model: {self.name}
 
-## Classification Metrics
+## Classification Report
 
-| Metric | Value |
-|---|---:|
+| Class | Precision | Recall | F1-Score | Support |
+|---|---:|---:|---:|---:|
 """
 
-        for metric_name, metric_value in metrics.items():
+        for classe in ["False", "True"]:
+
+            metrics = classification_report[classe]
+
             content += (
-                f"| {metric_name} | "
-                f"{metric_value:.4f} |\n"
+                f"| {classe} "
+                f"| {metrics['precision']:.4f} "
+                f"| {metrics['recall']:.4f} "
+                f"| {metrics['f1-score']:.4f} "
+                f"| {int(metrics['support'])} |\n"
+            )
+
+        content += "\n"
+
+        content += f"""
+| Aggregate | Precision | Recall | F1-Score | Support |
+|---|---:|---:|---:|---:|
+"""
+
+        for aggregate in ["macro avg", "weighted avg"]:
+
+            metrics = classification_report[aggregate]
+
+            content += (
+                f"| {aggregate} "
+                f"| {metrics['precision']:.4f} "
+                f"| {metrics['recall']:.4f} "
+                f"| {metrics['f1-score']:.4f} "
+                f"| {int(metrics['support'])} |\n"
             )
 
         content += f"""
+
+## Accuracy
+
+- Accuracy: {classification_report['accuracy']:.4f}
+
 ## Confusion Matrix
 
-![Confusion Matrix](../figures/{self.model_name}/confusion_matrix_{self.model_name}.png)
+![Confusion Matrix](figures/{self.name}/confusion_matrix_{self.name}.png)
 
 ## ROC Curve
 
-![ROC Curve](../figures/{self.model_name}/roc_curve_{self.model_name}.png)
+![ROC Curve](figures/{self.name}/roc_curve_{self.name}.png)
 
 ## Precision-Recall Curve
 
-![Precision-Recall Curve](../figures/{self.model_name}/precision_recall_curve_{self.model_name}.png)
+![Precision-Recall Curve](figures/{self.name}/precision_recall_curve_{self.name}.png)
 
 ## Learning Curve
 
-![Learning Curve](../figures/{self.model_name}/learning_curve_{self.model_name}.png)
+![Learning Curve](figures/{self.name}/learning_curve_{self.name}.png)
 """
 
-        self.output_path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
+        self.output_dir.parent.mkdir(parents=True, exist_ok=True)
 
-        self.output_path.write_text(
-            content,
-            encoding="utf-8",
-        )
+        self.output_dir.write_text(content, encoding="utf-8")
