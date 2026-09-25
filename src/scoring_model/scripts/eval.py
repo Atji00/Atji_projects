@@ -7,7 +7,7 @@ from scoring_model.eval_artefacts_func.roc_curve import RocCurve
 from scoring_model.eval_artefacts_func.train_validation import LearningCurve
 
 
-def orchestrator() -> None:
+def eval_orchestration() -> None:
 
     ClassificationReport().build()
 
@@ -24,4 +24,4 @@ def orchestrator() -> None:
 
 if __name__ == "__main__":
 
-    orchestrator()
+    eval_orchestration()

@@ -5,9 +5,9 @@ from scoring_model.runtime.paths import ProjectPaths
 
 paths = ProjectPaths()
 
-MODEL_NAME = 'logistic_regression_v001.joblib'
+MODEL_NAME = 'random_forest_v001'
 
-model_trained = joblib.load(paths.models_registry / MODEL_NAME)
+model_trained = joblib.load(paths.models_registry / f"{MODEL_NAME}.joblib")
 
 
 def predict() -> tuple[pd.DataFrame, pd.Series, pd.Series]:

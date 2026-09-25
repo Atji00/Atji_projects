@@ -13,7 +13,7 @@ class EvaluationReport:
 
         self.metrics_dir = self.paths.metrics / self.name
         self.figures_dir = self.paths.figures / self.name
-        self.output_dir = self.paths.reports / "eval_report.md"
+        self.output_dir = self.paths.reports / "Readme.md"
 
     def _load_classification_report(self) -> dict:
 

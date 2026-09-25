@@ -42,7 +42,7 @@ class ConfusionMatrix:
         ax.text(-0.25, -0.15, 'True Positive', c='blue')
         ax.text(0.75, -0.15, 'False Positive', c='blue')
 
-        ax.set_title(f'Confusion Matrix for: {self.name}')
+        ax.set_title(f'Confusion Matrix for: {self.name}\n')
         ax.set_ylabel("Model predictions")
         ax.set_xlabel("Actual Values")
 
