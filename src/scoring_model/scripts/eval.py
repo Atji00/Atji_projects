@@ -6,6 +6,8 @@ from scoring_model.eval_artefacts_func.eval_report import EvaluationReport
 from scoring_model.eval_artefacts_func.roc_curve import RocCurve
 from scoring_model.eval_artefacts_func.train_validation import LearningCurve
 
+from scoring_model.eval_artefacts_func.mlflow import Experiment
+
 
 def eval_orchestration() -> None:
 
@@ -20,6 +22,8 @@ def eval_orchestration() -> None:
     LearningCurve().build()
 
     EvaluationReport().build()
+
+    Experiment().start_run()
 
 
 if __name__ == "__main__":

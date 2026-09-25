@@ -1,0 +1,59 @@
+artifact_path: mlflow-artifacts:/1/models/m-2e7b6d9f35d642e59dfc8a119401b053/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.10
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+is_signature_from_type_hint: false
+mlflow_version: 3.15.1
+model_id: m-2e7b6d9f35d642e59dfc8a119401b053
+model_size_bytes: 27939261
+model_uuid: m-2e7b6d9f35d642e59dfc8a119401b053
+prompts: null
+run_id: 988e64b489684f6bb88f178a72d8e409
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "double", "name": "numerical__age", "required": true}, {"type":
+    "double", "name": "numerical__balance", "required": true}, {"type": "double",
+    "name": "numerical__day", "required": true}, {"type": "double", "name": "numerical__duration",
+    "required": true}, {"type": "double", "name": "numerical__campaign", "required":
+    true}, {"type": "double", "name": "numerical__previous", "required": true}, {"type":
+    "double", "name": "categorical__job_blue-collar", "required": true}, {"type":
+    "double", "name": "categorical__job_entrepreneur", "required": true}, {"type":
+    "double", "name": "categorical__job_housemaid", "required": true}, {"type": "double",
+    "name": "categorical__job_management", "required": true}, {"type": "double", "name":
+    "categorical__job_retired", "required": true}, {"type": "double", "name": "categorical__job_self-employed",
+    "required": true}, {"type": "double", "name": "categorical__job_services", "required":
+    true}, {"type": "double", "name": "categorical__job_student", "required": true},
+    {"type": "double", "name": "categorical__job_technician", "required": true}, {"type":
+    "double", "name": "categorical__job_unemployed", "required": true}, {"type": "double",
+    "name": "categorical__job_unknown", "required": true}, {"type": "double", "name":
+    "categorical__marital_married", "required": true}, {"type": "double", "name":
+    "categorical__marital_single", "required": true}, {"type": "double", "name": "categorical__education_secondary",
+    "required": true}, {"type": "double", "name": "categorical__education_tertiary",
+    "required": true}, {"type": "double", "name": "categorical__education_unknown",
+    "required": true}, {"type": "double", "name": "categorical__housing_1.0", "required":
+    true}, {"type": "double", "name": "categorical__loan_1.0", "required": true},
+    {"type": "double", "name": "categorical__poutcome_other", "required": true}, {"type":
+    "double", "name": "categorical__poutcome_success", "required": true}, {"type":
+    "double", "name": "categorical__poutcome_unknown", "required": true}, {"type":
+    "double", "name": "categorical__contact_telephone", "required": true}, {"type":
+    "double", "name": "categorical__contact_unknown", "required": true}]'
+  outputs: '[{"type": "double", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-09-25 20:48:25.142569'
