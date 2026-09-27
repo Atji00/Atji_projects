@@ -6,7 +6,7 @@ from scoring_model.eval_artefacts_func.eval_report import EvaluationReport
 from scoring_model.eval_artefacts_func.roc_curve import RocCurve
 from scoring_model.eval_artefacts_func.train_validation import LearningCurve
 
-from scoring_model.eval_artefacts_func.mlflow import Experiment
+from scoring_model.eval_artefacts_func.ml_flow import Experiment
 
 
 def eval_orchestration() -> None:
