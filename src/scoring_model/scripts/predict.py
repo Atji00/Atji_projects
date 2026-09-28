@@ -5,7 +5,7 @@ from scoring_model.runtime.paths import ProjectPaths
 
 paths = ProjectPaths()
 
-MODEL_NAME = 'random_forest_v001'
+MODEL_NAME = 'logistic_regression_v001'
 
 model_trained = joblib.load(paths.models_registry / f"{MODEL_NAME}.joblib")
 

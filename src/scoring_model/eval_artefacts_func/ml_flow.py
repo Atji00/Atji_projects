@@ -1,7 +1,5 @@
 import json
-import subprocess
-import sys
-import time
+import socket
 
 import mlflow
 import pandas as pd
@@ -59,7 +57,11 @@ class Experiment:
         
         self.experiment_name = "Credit Scoring Modeling Experiment"
 
-        self.tracking_uri = "http://127.0.0.1:8080"
+        self.host = "127.0.0.1"
+
+        self.port = 8080
+
+        self.tracking_uri = f"http://{self.host}:{self.port}"
                
         self.experiment_description = (
                                         """
@@ -81,47 +83,34 @@ class Experiment:
         mlflow.set_tracking_uri(self.tracking_uri)
 
         self.client = MlflowClient(self.tracking_uri)
-        
-        self.server_process = self._server_starting()
 
-        time.sleep(2)
+        # The MLflow server is started outside this class (mlflow_server.ps1)
+        if not self._server_is_reachable():
+
+            raise RuntimeError(
+                                f"MLflow server is not running at {self.tracking_uri}. "
+                                "Start it first with: .\\mlflow_server.ps1 start"
+                                )
 
         self.experiment_id = self._configuration()
 
 
-    def _server_starting(self) -> subprocess.Popen | None:
-        
+    def _server_is_reachable(self, timeout: float = 1.0) -> bool:
+
         """
-        Start the MLflow tracking server if it is not already running.
+        Check quickly that something is listening on the MLflow host:port.
+        Uses a raw TCP connection, so MLflow's retry/backoff is not triggered.
         """
 
         try:
-            self.client.search_experiments()
 
-            print(f"MLflow server already running at {self.tracking_uri}")
+            with socket.create_connection((self.host, self.port), timeout=timeout):
 
-            return None
+                return True
 
-        except Exception:  # noqa: BLE001, S110
+        except OSError:
 
-            pass
-
-        print(f"Starting MLflow server at {self.tracking_uri}...")
-
-        return subprocess.Popen(
-                                    [
-                                        sys.executable,
-                                        "-m",
-                                        "mlflow",
-                                        "server",
-                                        "--host",
-                                        "127.0.0.1",
-                                        "--port",
-                                        "8080",
-                                    ],
-                                    stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL
-                                )
+            return False
 
     # Experiment configuration
     def _configuration(self) -> str:
