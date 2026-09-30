@@ -47,6 +47,10 @@ python_functions = ["test_*"]
 
 addopts = "-v"
 
+markers = [
+    "integration: end-to-end tests of the train / predict / eval pipelines",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=8.0",

@@ -1,8 +1,9 @@
 import subprocess
 import sys
-from pathlib import Path
 
-TESTS_DIR = Path(__file__).parent.parent
+from scoring_model.runtime.paths import ProjectPaths
+
+TESTS_DIR = ProjectPaths().tests
 REPORTS_DIR = TESTS_DIR / "unit_tests_reports"
 
 
@@ -48,7 +49,8 @@ def execute_test(run_all: bool = True, test_name: str | None = None) -> None:
                                         "--html",
                                         str(report_path),
                                         "--self-contained-html",
-                                    ]
+                                    ],
+                                    check = False
                                 )
 
         if result.returncode != 0:
