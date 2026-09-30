@@ -72,4 +72,4 @@ def train_orchestration(model_name: str = 'logistic_regression', version: str = 
     
 if __name__ == "__main__":
 
-    train_orchestration('random_forest', 'v001')
+    train_orchestration('logistic_regression', 'v001')

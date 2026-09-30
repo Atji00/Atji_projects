@@ -8,19 +8,19 @@
 
 | Class | Precision | Recall | F1-Score | Support |
 |---|---:|---:|---:|---:|
-| False | 0.9637 | 0.8290 | 0.8913 | 801 |
-| True | 0.3657 | 0.7596 | 0.4938 | 104 |
+| False | 0.9165 | 0.7403 | 0.8191 | 801 |
+| True | 0.1938 | 0.4808 | 0.2762 | 104 |
 
 
 | Aggregate | Precision | Recall | F1-Score | Support |
 |---|---:|---:|---:|---:|
-| macro avg | 0.6647 | 0.7943 | 0.6925 | 905 |
-| weighted avg | 0.8950 | 0.8210 | 0.8456 | 905 |
+| macro avg | 0.5552 | 0.6105 | 0.5477 | 905 |
+| weighted avg | 0.8335 | 0.7105 | 0.7567 | 905 |
 
 
 ## Accuracy
 
-- Accuracy: 0.8210
+- Accuracy: 0.7105
 
 ## Confusion Matrix
 
@@ -37,3 +37,17 @@
 ## Learning Curve
 
 ![Learning Curve](figures/logistic_regression_v001/learning_curve_logistic_regression_v001.png)
+
+## Model Interpretability (SHAP)
+
+### SHAP Summary
+
+![SHAP Summary](logistic_regression_v001/shap_summary_logistic_regression_v001.png)
+
+### SHAP Feature Importance
+
+![SHAP Feature Importance](logistic_regression_v001/shap_summary_bar_logistic_regression_v001.png)
+
+### SHAP Waterfall - ClientX
+
+![SHAP Waterfall](logistic_regression_v001/waterfall_ClientX.png)

@@ -24,11 +24,11 @@ class RawDataLoader:
 
     def available_files(self) -> list[str]:
      
-        if not self.paths.raw_data.is_dir():
+        if not self.paths.raw.is_dir():
 
             raise FileNotFoundError(
                 f"Raw data directory not found: "
-                f"{self.paths.raw_data}"
+                f"{self.paths.raw}"
             )
 
         allowed_formats = {format.lower().lstrip(".")
@@ -37,7 +37,7 @@ class RawDataLoader:
 
         return sorted(
                         path.name
-                        for path in self.paths.raw_data.iterdir()
+                        for path in self.paths.raw.iterdir()
                         if (
                             path.is_file()
                             and path.suffix.lower().lstrip(".")

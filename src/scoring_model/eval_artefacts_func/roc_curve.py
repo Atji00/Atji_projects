@@ -46,5 +46,6 @@ class RocCurve:
         fig.tight_layout()
 
         fig.savefig(self.output_dir / f"roc_curve_{self.name}.png")
+        plt.close(fig)
 
         return fig

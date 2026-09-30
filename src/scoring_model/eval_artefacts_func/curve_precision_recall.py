@@ -42,5 +42,6 @@ class PrecisionRecallCurve:
         fig.tight_layout()
 
         fig.savefig(self.output_dir / f"precision_recall_curve_{self.name}.png")
+        plt.close(fig)
 
         return fig

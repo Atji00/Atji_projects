@@ -52,5 +52,6 @@ class ConfusionMatrix:
         fig.tight_layout()
 
         fig.savefig(self.output_dir / f"confusion_matrix_{self.name}.png")
+        plt.close(fig)
 
         return fig

@@ -5,6 +5,7 @@ from scoring_model.eval_artefacts_func.curve_precision_recall import PrecisionRe
 from scoring_model.eval_artefacts_func.eval_report import EvaluationReport
 from scoring_model.eval_artefacts_func.roc_curve import RocCurve
 from scoring_model.eval_artefacts_func.train_validation import LearningCurve
+from scoring_model.eval_artefacts_func.model_interpretability import ModelInterpreter
 
 from scoring_model.eval_artefacts_func.ml_flow import Experiment
 
@@ -21,9 +22,13 @@ def eval_orchestration() -> None:
 
     LearningCurve().build()
 
+    ModelInterpreter().plot_shap_summary()
+
+    ModelInterpreter().plot_waterfall()
+
     EvaluationReport().build()
 
-    Experiment().start_run()
+    #Experiment().start_run()
 
 
 if __name__ == "__main__":

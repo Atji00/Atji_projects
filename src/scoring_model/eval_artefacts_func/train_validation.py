@@ -85,5 +85,6 @@ class LearningCurve:
                         dpi=300,
                         bbox_inches="tight"
                     )
+        plt.close(fig)
 
         return fig

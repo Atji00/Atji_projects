@@ -6,10 +6,13 @@ from scoring_model.scripts.predict import MODEL_NAME
 
 class EvaluationReport:
 
-    def __init__(self) -> None:
+    def __init__(self, client_name: str = "ClientX") -> None:
 
         self.paths = ProjectPaths()
         self.name = MODEL_NAME
+
+        # Client explained by ModelInterpreter.plot_waterfall
+        self.client_name = client_name
 
         self.metrics_dir = self.paths.metrics / self.name
         self.figures_dir = self.paths.figures / self.name
@@ -89,6 +92,20 @@ class EvaluationReport:
 ## Learning Curve
 
 ![Learning Curve](figures/{self.name}/learning_curve_{self.name}.png)
+
+## Model Interpretability (SHAP)
+
+### SHAP Summary
+
+![SHAP Summary]({self.name}/shap_summary_{self.name}.png)
+
+### SHAP Feature Importance
+
+![SHAP Feature Importance]({self.name}/shap_summary_bar_{self.name}.png)
+
+### SHAP Waterfall - {self.client_name}
+
+![SHAP Waterfall]({self.name}/waterfall_{self.client_name}.png)
 """
 
         self.output_dir.parent.mkdir(parents=True, exist_ok=True)

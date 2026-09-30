@@ -1,18 +1,12 @@
 NUMERICAL_FEATURES = [
-                        "age",
-                        "balance",
-                        "day",
-                        "duration",
-                        "campaign",
-                        "previous",
+                    "balance",
+                    "campaign",
+                    "previous",
                     ]
 
 CATEGORICAL_FEATURES = [
-                            "job",
-                            "marital",
-                            "education",
-                            "housing",
-                            "loan",
-                            "poutcome",
-                            "contact",
+                        "marital",
+                        "housing",
+                        "loan",
+                        "poutcome"
                         ]
