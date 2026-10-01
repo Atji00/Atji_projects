@@ -28,7 +28,7 @@ class ModelInterpreter:
         self.model_name = MODEL_NAME
         self.model_trained = model_trained
 
-        self.output_dir = (self.paths.reports / self.model_name)
+        self.output_dir = (self.paths.figures / self.model_name)
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
