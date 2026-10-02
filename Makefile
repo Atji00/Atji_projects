@@ -2,7 +2,7 @@
 PYTHON = .venv/Scripts/python.exe
 
 # Commandes disponibles
-.PHONY: mlflow-start train evaluate test unitest inttest
+.PHONY: mlflow-start train predict evaluate test unitest inttest
 
 # --------------------------------------------------
 # Lancer MLflow-Server
@@ -18,6 +18,9 @@ mlflow-start:
 
 train:
 	$(PYTHON) src/scoring_model/scripts/train.py
+
+predict:
+	$(PYTHON) src/scoring_model/scripts/predict.py
 
 evaluate:
 	$(PYTHON) src/scoring_model/scripts/eval.py

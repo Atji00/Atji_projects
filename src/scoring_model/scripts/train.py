@@ -8,7 +8,7 @@ from scoring_model.utils.func_casting import casting
 from scoring_model.utils.func_missings_imputing import impute_missings
 
 
-def train_orchestration(model_name: str = 'logistic_regression', version: str = 'v001') -> None:
+def train_orchestration(model_name: str, version: str) -> None:
 
     def stage(step_name: str, step: int, total_step: int = 8) -> None:
 
@@ -72,4 +72,7 @@ def train_orchestration(model_name: str = 'logistic_regression', version: str = 
     
 if __name__ == "__main__":
 
-    train_orchestration('logistic_regression', 'v001')
+    model_name = input("Choose a model name from models.yaml: ").strip()
+    version = input("Enter the model version, e.g., v001: ").strip()
+
+    train_orchestration(model_name, version)

@@ -42,12 +42,12 @@
 
 ### SHAP Summary
 
-![SHAP Summary](logistic_regression_v001/shap_summary_logistic_regression_v001.png)
+![SHAP Summary](figures/logistic_regression_v001/shap_summary_logistic_regression_v001.png)
 
 ### SHAP Feature Importance
 
-![SHAP Feature Importance](logistic_regression_v001/shap_summary_bar_logistic_regression_v001.png)
+![SHAP Feature Importance](figures/logistic_regression_v001/shap_summary_bar_logistic_regression_v001.png)
 
 ### SHAP Waterfall - ClientX
 
-![SHAP Waterfall](logistic_regression_v001/waterfall_ClientX.png)
+![SHAP Waterfall](figures/logistic_regression_v001/waterfall_ClientX.png)

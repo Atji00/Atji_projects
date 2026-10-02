@@ -158,7 +158,11 @@ class Experiment:
             mlflow.sklearn.log_model(
                                     sk_model=model_trained, 
                                     input_example=self.input, 
-                                    artifact_path=self.artefact_path
+                                    artifact_path=self.artefact_path,
+                                    skops_trusted_types=[
+                                                        "xgboost.core.Booster",
+                                                        "xgboost.sklearn.XGBClassifier",
+                                                        ]
                                     )
 
         print(f"MLflow run completed: {run.info.run_name}")

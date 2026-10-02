@@ -10,7 +10,7 @@ from scoring_model.eval_artefacts_func.model_interpretability import ModelInterp
 from scoring_model.eval_artefacts_func.ml_flow import Experiment
 
 
-def eval_orchestration() -> None:
+def eval_orchestration(enable_mlflow: bool = False) -> None:
 
     ClassificationReport().build()
 
@@ -28,7 +28,9 @@ def eval_orchestration() -> None:
 
     EvaluationReport().build()
 
-    #Experiment().start_run()
+    if enable_mlflow:
+
+        Experiment().start_run()
 
 
 if __name__ == "__main__":

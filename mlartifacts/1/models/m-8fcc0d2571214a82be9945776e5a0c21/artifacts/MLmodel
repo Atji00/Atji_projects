@@ -1,0 +1,44 @@
+artifact_path: mlflow-artifacts:/1/models/m-8fcc0d2571214a82be9945776e5a0c21/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.10
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types:
+    - xgboost.core.Booster
+    - xgboost.sklearn.XGBClassifier
+is_signature_from_type_hint: false
+mlflow_version: 3.15.1
+model_id: m-8fcc0d2571214a82be9945776e5a0c21
+model_size_bytes: 746566
+model_uuid: m-8fcc0d2571214a82be9945776e5a0c21
+prompts: null
+run_id: 5ab067768caf42f58e6d1a14c336c456
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "double", "name": "numerical__balance", "required": true}, {"type":
+    "double", "name": "numerical__campaign", "required": true}, {"type": "double",
+    "name": "numerical__previous", "required": true}, {"type": "double", "name": "categorical__marital_married",
+    "required": true}, {"type": "double", "name": "categorical__marital_single", "required":
+    true}, {"type": "double", "name": "categorical__housing_1.0", "required": true},
+    {"type": "double", "name": "categorical__loan_1.0", "required": true}, {"type":
+    "double", "name": "categorical__poutcome_other", "required": true}, {"type": "double",
+    "name": "categorical__poutcome_success", "required": true}, {"type": "double",
+    "name": "categorical__poutcome_unknown", "required": true}]'
+  outputs: '[{"type": "long", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-10-02 10:36:48.030154'

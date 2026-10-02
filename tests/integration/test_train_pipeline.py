@@ -13,7 +13,7 @@ from scoring_model.features.selected_features import (
 )
 from scoring_model.scripts.train import train_orchestration
 
-from .conftest import MODEL_NAME, RAW_FILENAME, REAL_PATHS
+from .conftest import MODEL, MODEL_NAME, RAW_FILENAME, REAL_PATHS, VERSION
 
 pytestmark = pytest.mark.integration
 
@@ -187,7 +187,7 @@ class TestFailures:
 
     def test_missing_raw_file_raises(self, empty_project):
         with pytest.raises(FileNotFoundError):
-            train_orchestration()
+            train_orchestration(MODEL, VERSION)
 
     @pytest.mark.parametrize("column, value", [
         ("age", 150),
@@ -200,7 +200,7 @@ class TestFailures:
         invalid.to_csv(empty_project.raw / RAW_FILENAME, sep=";", index=False)
 
         with pytest.raises(SCHEMA_ERRORS):
-            train_orchestration()
+            train_orchestration(MODEL, VERSION)
 
         assert not empty_project.intermediate.exists()
         assert not (empty_project.models_registry / f"{MODEL_NAME}.joblib").exists()
@@ -210,4 +210,10 @@ class TestFailures:
         invalid.to_csv(empty_project.raw / RAW_FILENAME, sep=";", index=False)
 
         with pytest.raises(SCHEMA_ERRORS):
-            train_orchestration()
+            train_orchestration(MODEL, VERSION)
+
+    def test_unknown_model_raises(self, trained_project):
+        with pytest.raises(ValueError, match="Unknown model"):
+            train_orchestration("unknown_model", "v_integration")
+
+        assert not (trained_project.models_registry / "unknown_model_v_integration.joblib").exists()

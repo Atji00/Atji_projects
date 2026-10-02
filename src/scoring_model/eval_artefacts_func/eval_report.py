@@ -97,15 +97,15 @@ class EvaluationReport:
 
 ### SHAP Summary
 
-![SHAP Summary]({self.name}/shap_summary_{self.name}.png)
+![SHAP Summary](figures/{self.name}/shap_summary_{self.name}.png)
 
 ### SHAP Feature Importance
 
-![SHAP Feature Importance]({self.name}/shap_summary_bar_{self.name}.png)
+![SHAP Feature Importance](figures/{self.name}/shap_summary_bar_{self.name}.png)
 
 ### SHAP Waterfall - {self.client_name}
 
-![SHAP Waterfall]({self.name}/waterfall_{self.client_name}.png)
+![SHAP Waterfall](figures/{self.name}/waterfall_{self.client_name}.png)
 """
 
         self.output_dir.parent.mkdir(parents=True, exist_ok=True)

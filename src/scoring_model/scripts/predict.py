@@ -16,7 +16,7 @@ def predict() -> tuple[pd.DataFrame, pd.Series, pd.Series]:
 
     test_data_dir = paths.intermediate / "unprocessed_test"
 
-    out_dir = (paths.processed/ "processed_test")
+    out_dir = paths.processed/ "processed_test"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     processor = joblib.load(paths.features / 'processor_fitted.joblib')
