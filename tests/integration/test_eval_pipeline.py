@@ -50,9 +50,9 @@ class TestArtefacts:
         f"figures/{MODEL_NAME}/roc_curve_{MODEL_NAME}.png",
         f"figures/{MODEL_NAME}/precision_recall_curve_{MODEL_NAME}.png",
         f"figures/{MODEL_NAME}/learning_curve_{MODEL_NAME}.png",
-        f"{MODEL_NAME}/shap_summary_{MODEL_NAME}.png",
-        f"{MODEL_NAME}/shap_summary_bar_{MODEL_NAME}.png",
-        f"{MODEL_NAME}/waterfall_ClientX.png",
+        f"figures/{MODEL_NAME}/shap_summary_{MODEL_NAME}.png",
+        f"figures/{MODEL_NAME}/shap_summary_bar_{MODEL_NAME}.png",
+        f"figures/{MODEL_NAME}/waterfall_ClientX.png",
         "Readme.md",
     ])
     def test_artefact_is_written(self, evaluated_project, relative_path):

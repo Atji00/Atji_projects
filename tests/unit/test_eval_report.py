@@ -77,7 +77,7 @@ class TestShapSection:
         "waterfall_ClientX.png",
     ])
     def test_shap_plots_are_linked(self, content, image):
-        assert f"(test_model/{image})" in content
+        assert f"(figures/test_model/{image})" in content
 
     def test_shap_section_is_after_learning_curve(self, content):
         assert content.index("## Learning Curve") < content.index("## Model Interpretability (SHAP)")
@@ -87,7 +87,7 @@ class TestShapSection:
         evaluation_report.build()
         content = (tmp_project.reports / "Readme.md").read_text(encoding="utf-8")
         assert "### SHAP Waterfall - Alice" in content
-        assert "(test_model/waterfall_Alice.png)" in content
+        assert "(figures/test_model/waterfall_Alice.png)" in content
 
     def test_links_match_files_written_by_model_interpreter(
         self, monkeypatch, patch_paths, report_dict, fitted_model, tmp_project
@@ -114,8 +114,8 @@ class TestShapSection:
         EvaluationReport().build()
 
         content = (tmp_project.reports / "Readme.md").read_text(encoding="utf-8")
-        written = {path.name for path in (tmp_project.reports / name).iterdir()}
-        linked = set(re.findall(rf"\({name}/([^)]+)\)", content))
+        written = {path.name for path in (tmp_project.figures / name).iterdir()}
+        linked = set(re.findall(rf"\(figures/{name}/((?:shap_|waterfall_)[^)]+)\)", content))
         assert linked == written
 
 

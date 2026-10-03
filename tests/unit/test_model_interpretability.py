@@ -20,7 +20,7 @@ def interpreter(monkeypatch, patch_paths, eval_files, fitted_model):
 
 @pytest.fixture
 def output_dir(tmp_project):
-    return tmp_project.reports / "logistic_regression_test"
+    return tmp_project.figures / "logistic_regression_test"
 
 
 # ----------------------------------------------------------------------
