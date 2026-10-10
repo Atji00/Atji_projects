@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Credit Scoring - Prédiction</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='css/clientInformations.css') }}">
+</head>
+
+<body>
+
+    <main class="page">
+
+        <section class="card">
+
+            <header class="card-header">
+                <span class="badge">Credit Scoring</span>
+                <h1>Évaluation du risque de crédit</h1>
+                <p>Renseignez les informations du client pour obtenir une prédiction.</p>
+            </header>
+
+            <div class="card-body">
+
+                {% if flashes %}
+                    <div class="messages" role="alert">
+                        {% for flash in flashes %}
+                            <div class="message {{ flash.category }}">{{ flash.message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form action="{{ url_for('submit_form') }}" method="post" class="prediction-form">
+
+                    <!-- Section 1 : identite du client (non utilisee par le modele) -->
+                    <div class="form-section">
+                        <h2><span class="step">1</span> Informations client</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="name">Nom <span class="optional">(optionnel)</span></label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value="{{ values.get('name', '') }}"
+                                    placeholder="Jean Dupont"
+                                    minlength="2"
+                                    maxlength="100"
+                                    autocomplete="name"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email <span class="optional">(optionnel)</span></label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value="{{ values.get('email', '') }}"
+                                    placeholder="jean.dupont@exemple.fr"
+                                    maxlength="50"
+                                    autocomplete="email"
+                                >
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Section 2 : variables numeriques -->
+                    <div class="form-section">
+                        <h2><span class="step">2</span> Informations financières</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="balance">Solde bancaire (€)</label>
+                                <input
+                                    type="number"
+                                    id="balance"
+                                    name="balance"
+                                    value="{{ values.get('balance', '') }}"
+                                    placeholder="1500"
+                                    step="any"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="campaign">Nombre de contacts</label>
+                                <input
+                                    type="number"
+                                    id="campaign"
+                                    name="campaign"
+                                    value="{{ values.get('campaign', '') }}"
+                                    placeholder="1"
+                                    min="1"
+                                    step="1"
+                                    required
+                                >
+                                <span class="hint">Contacts pendant la campagne actuelle (≥ 1)</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="previous">Contacts précédents</label>
+                                <input
+                                    type="number"
+                                    id="previous"
+                                    name="previous"
+                                    value="{{ values.get('previous', '') }}"
+                                    placeholder="0"
+                                    min="0"
+                                    step="1"
+                                    required
+                                >
+                                <span class="hint">Contacts avant cette campagne (≥ 0)</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Section 3 : variables categorielles -->
+                    <div class="form-section">
+                        <h2><span class="step">3</span> Informations personnelles</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="marital">Situation matrimoniale</label>
+                                <select id="marital" name="marital" required>
+                                    <option value="" disabled {% if not values.get('marital') %}selected{% endif %}>Sélectionner</option>
+                                    {% for option in marital_options %}
+                                        <option value="{{ option }}" {% if values.get('marital') == option %}selected{% endif %}>{{ option | capitalize }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="housing">Crédit immobilier</label>
+                                <select id="housing" name="housing" required>
+                                    <option value="" disabled {% if values.get('housing') is none %}selected{% endif %}>Sélectionner</option>
+                                    <option value="true" {% if values.get('housing') | string | lower == 'true' %}selected{% endif %}>Oui</option>
+                                    <option value="false" {% if values.get('housing') | string | lower == 'false' %}selected{% endif %}>Non</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="loan">Prêt personnel</label>
+                                <select id="loan" name="loan" required>
+                                    <option value="" disabled {% if values.get('loan') is none %}selected{% endif %}>Sélectionner</option>
+                                    <option value="true" {% if values.get('loan') | string | lower == 'true' %}selected{% endif %}>Oui</option>
+                                    <option value="false" {% if values.get('loan') | string | lower == 'false' %}selected{% endif %}>Non</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="poutcome">Résultat de la campagne précédente</label>
+                                <select id="poutcome" name="poutcome" required>
+                                    <option value="" disabled {% if not values.get('poutcome') %}selected{% endif %}>Sélectionner</option>
+                                    {% for option in poutcome_options %}
+                                        <option value="{{ option }}" {% if values.get('poutcome') == option %}selected{% endif %}>{{ option | capitalize }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button">Calculer la prédiction</button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

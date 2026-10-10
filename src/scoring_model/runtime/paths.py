@@ -19,6 +19,13 @@ class ProjectPaths:
         self.intermediate = self.data / "intermediate"
 
         self.scoring_model = self.src / "scoring_model"
+        self.api = self.src / "api"
+
+        self.middleware = self.api / "middleware"
+        self.routes = self.api / "routes"
+        self.static = self.api / "static"
+        self.templates = self.api / "templates"
+        self.modules = self.api / "modules"
 
         self.dataset = self.scoring_model / "dataset"
         self.features = self.scoring_model / "features" 

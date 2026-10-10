@@ -6,7 +6,7 @@ import pandas as pd
 from mlflow import ActiveRun, MlflowClient, MlflowException
 
 from scoring_model.runtime.paths import ProjectPaths
-from scoring_model.scripts.predict import MODEL_NAME, model_trained
+from scoring_model.scripts.predict import MODEL_NAME, MODEL_TRAINED
 
 
 class Experiment:
@@ -30,7 +30,7 @@ class Experiment:
         
         #-----Model Settings--------------------
         
-        self.model_params = model_trained.get_params()
+        self.model_params = MODEL_TRAINED.get_params()
 
         self.input = pd.read_parquet(self.input_path / 
                                      "processed_test" / 
@@ -156,7 +156,7 @@ class Experiment:
             mlflow.log_metrics(self.metrics)
 
             mlflow.sklearn.log_model(
-                                    sk_model=model_trained, 
+                                    sk_model=MODEL_TRAINED, 
                                     input_example=self.input, 
                                     artifact_path=self.artefact_path,
                                     skops_trusted_types=[

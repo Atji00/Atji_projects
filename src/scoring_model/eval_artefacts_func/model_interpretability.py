@@ -1,10 +1,13 @@
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 import shap
 
 from scoring_model.runtime.config import ConfigLoader
 from scoring_model.runtime.paths import ProjectPaths
-from scoring_model.scripts.predict import MODEL_NAME, model_trained
+from scoring_model.scripts.predict import MODEL_NAME, MODEL_TRAINED
 
 
 class ModelInterpreter:
@@ -26,7 +29,7 @@ class ModelInterpreter:
         self.y_test = pd.read_parquet(self.y_dir / "y_test.parquet")
 
         self.model_name = MODEL_NAME
-        self.model_trained = model_trained
+        self.model_trained = MODEL_TRAINED
 
         self.output_dir = (self.paths.figures / self.model_name)
 
@@ -156,57 +159,13 @@ class ModelInterpreter:
 
 
     # Waterfall plot 
-    def plot_waterfall(self, client_information: pd.Series | None = None,
-                        client_name: str = "ClientX") -> None:
+    def plot_waterfall(self) -> None:
 
-        """
-        Generate a local SHAP waterfall explanation.
+        _, shap_values = self._shap_values()
 
-        Parameters
-        ----------
-        client_name : str
-            Name of the client displayed on the graph.
+        client_input = self.X_test_processed.iloc[[self.random]]
 
-        observation_index : int
-            Row number of the observation in the test dataset.
-            Used only when client_information is None.
-
-        client_information : pd.Series | None, default=None
-            Client information to explain.
-
-            If None:
-                the observation is retrieved from the test set.
-
-            If a pd.Series is provided:
-                the provided client information is used directly.
-        """
-
-
-        explainer, shap_values = self._shap_values()
-
-        # Check for input values
-
-        if client_information is None:
-
-            client_input = self.X_test_processed.iloc[[self.random]]
-
-            shap_explanation = shap_values[self.random]
-
-        elif isinstance(client_information, pd.Series):
-
-            client_input = client_information.to_frame().T[
-                                            self.X_test_processed.columns
-                                            ]
-
-            shap_explanation = explainer(client_input)[0]
-
-            shap_explanation.feature_names = self._clean_feature_names(
-                                            client_input.columns
-                                            )
-
-        else:
-
-            raise TypeError("client_information must be a pandas Series or None.")
+        shap_explanation = shap_values[self.random]
 
 
         # Compute probability of default and predict risk class
@@ -225,7 +184,7 @@ class ModelInterpreter:
         fig = plt.gcf()
 
         fig.suptitle(
-                    f"Client: {client_name}  |  "
+                    f"Client->: {self.random}  |  "
                     f"Probability of Default: {probability:.2%}  |  "
                     f"Risk Class: {risk_class}",
                     x=0.5,
@@ -242,7 +201,7 @@ class ModelInterpreter:
                 color="grey",
                 )
 
-        output = (self.output_dir / f"waterfall_{client_name}.png")
+        output = (self.output_dir / f"waterfall_client{self.random}.png")
 
         fig.savefig(output, dpi=300, bbox_inches="tight")
 

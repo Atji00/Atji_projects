@@ -7,7 +7,7 @@ paths = ProjectPaths()
 
 MODEL_NAME = 'logistic_regression_v001'
 
-model_trained = joblib.load(paths.models_registry / f"{MODEL_NAME}.joblib")
+MODEL_TRAINED = joblib.load(paths.models_registry / f"{MODEL_NAME}.joblib")
 
 
 def predict() -> tuple[pd.DataFrame, pd.Series, pd.Series]:
@@ -39,13 +39,13 @@ def predict() -> tuple[pd.DataFrame, pd.Series, pd.Series]:
     #-----------------------Predictions, probabilities, saving to .parquet---------#
 
     y_predicted = pd.Series(
-                                model_trained.predict(X_test_processed),
+                                MODEL_TRAINED.predict(X_test_processed),
                                 index=y_test.index,
                                 name="y_pred"
                             )
 
     y_probability = pd.Series(
-                                model_trained.predict_proba(X_test_processed)[:, 1],
+                                MODEL_TRAINED.predict_proba(X_test_processed)[:, 1],
                                 index=y_test.index,
                                 name="y_prob",
                             )

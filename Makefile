@@ -2,7 +2,8 @@
 PYTHON = .venv/Scripts/python.exe
 
 # Commandes disponibles
-.PHONY: mlflow-start train predict evaluate test unitest inttest
+.PHONY: mlflow-start train predict evaluate test unitest inttest 
+		uv_sync run_uvicorn
 
 # --------------------------------------------------
 # Lancer MLflow-Server
@@ -33,3 +34,10 @@ unitest:
 
 inttest:
 	$(PYTHON) tests/integration/execute_integration_test.py
+
+uv_sync:
+	uv sync
+	uv pip compile pyproject.toml -o requirements.txt
+
+run_uvicorn:
+	$(PYTHON) src/main.py

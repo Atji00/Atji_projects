@@ -48,12 +48,15 @@ click==8.4.2
     #   streamlit
     #   uvicorn
 cloudpickle==3.1.2
-    # via mlflow-skinny
+    # via
+    #   mlflow-skinny
+    #   shap
 colorama==0.4.6
     # via
     #   click
     #   ipython
     #   pytest
+    #   tqdm
 colorlover==0.3.0
     # via cufflinks
 comm==0.2.3
@@ -76,8 +79,12 @@ databricks-sdk==0.133.0
     #   mlflow-tracing
 debugpy==1.8.21
     # via ipykernel
+dnspython==2.8.0
+    # via email-validator
 docker==7.2.0
     # via mlflow
+email-validator==2.3.0
+    # via credit-scoring-modelling (pyproject.toml)
 et-xmlfile==2.0.0
     # via openpyxl
 executing==2.2.1
@@ -121,8 +128,11 @@ huey==3.3.4
 idna==3.19
     # via
     #   anyio
+    #   email-validator
     #   requests
     #   yarl
+imageio==2.38.0
+    # via scikit-image
 imbalanced-learn==0.14.2
     # via credit-scoring-modelling (pyproject.toml)
 importlib-metadata==9.0.0
@@ -142,12 +152,14 @@ ipywidgets==8.1.9
     # via cufflinks
 itsdangerous==2.2.0
     # via
+    #   credit-scoring-modelling (pyproject.toml)
     #   flask
     #   streamlit
 jedi==0.20.0
     # via ipython
 jinja2==3.1.6
     # via
+    #   credit-scoring-modelling (pyproject.toml)
     #   altair
     #   flask
     #   pydeck
@@ -169,6 +181,15 @@ jupyterlab-widgets==3.0.17
     # via ipywidgets
 kiwisolver==1.5.0
     # via matplotlib
+lazy-loader==0.6
+    # via scikit-image
+lime==0.2.0.1
+    # via credit-scoring-modelling (pyproject.toml)
+llvmlite==0.50.0
+    # via
+    #   credit-scoring-modelling (pyproject.toml)
+    #   numba
+    #   shap
 mako==1.4.1
     # via alembic
 markupsafe==3.0.3
@@ -180,6 +201,7 @@ markupsafe==3.0.3
 matplotlib==3.11.1
     # via
     #   credit-scoring-modelling (pyproject.toml)
+    #   lime
     #   mlflow
     #   seaborn
 matplotlib-inline==0.2.2
@@ -196,6 +218,8 @@ multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
+mypy-extensions==1.1.0
+    # via typing-inspect
 narwhals==2.24.0
     # via
     #   altair
@@ -203,23 +227,35 @@ narwhals==2.24.0
     #   scikit-learn
 nest-asyncio2==1.7.2
     # via ipykernel
+networkx==3.7
+    # via scikit-image
+numba==0.68.0
+    # via
+    #   credit-scoring-modelling (pyproject.toml)
+    #   shap
 numpy==2.5.2
     # via
     #   credit-scoring-modelling (pyproject.toml)
     #   contourpy
     #   cufflinks
+    #   imageio
     #   imbalanced-learn
+    #   lime
     #   matplotlib
     #   mlflow
+    #   numba
     #   pandas
     #   patsy
     #   pydeck
+    #   scikit-image
     #   scikit-learn
     #   scipy
     #   seaborn
+    #   shap
     #   skops
     #   statsmodels
     #   streamlit
+    #   tifffile
     #   xgboost
 openpyxl==3.1.5
     # via credit-scoring-modelling (pyproject.toml)
@@ -243,11 +279,15 @@ packaging==26.3
     # via
     #   altair
     #   ipykernel
+    #   lazy-loader
     #   matplotlib
     #   mlflow-skinny
     #   mlflow-tracing
+    #   pandera
     #   plotly
     #   pytest
+    #   scikit-image
+    #   shap
     #   skops
     #   statsmodels
     #   streamlit
@@ -257,15 +297,20 @@ pandas==2.3.3
     #   cufflinks
     #   mlflow
     #   seaborn
+    #   shap
     #   statsmodels
     #   streamlit
+pandera==0.33.1
+    # via credit-scoring-modelling (pyproject.toml)
 parso==0.8.7
     # via jedi
 patsy==1.0.2
     # via statsmodels
 pillow==12.3.0
     # via
+    #   imageio
     #   matplotlib
+    #   scikit-image
     #   streamlit
 platformdirs==4.11.7
     # via jupyter-core
@@ -316,6 +361,7 @@ pydantic==2.13.4
     #   fastapi
     #   mlflow-skinny
     #   mlflow-tracing
+    #   pandera
 pydantic-core==2.46.4
     # via pydantic
 pydeck==0.9.3
@@ -340,7 +386,9 @@ python-dotenv==1.2.3
     #   credit-scoring-modelling (pyproject.toml)
     #   mlflow-skinny
 python-multipart==0.0.32
-    # via streamlit
+    # via
+    #   credit-scoring-modelling (pyproject.toml)
+    #   streamlit
 pytz==2026.3.post1
     # via pandas
 pywin32==312
@@ -370,18 +418,25 @@ rpds-py==2026.6.3
     # via
     #   jsonschema
     #   referencing
+scikit-image==0.26.0
+    # via lime
 scikit-learn==1.9.0
     # via
     #   credit-scoring-modelling (pyproject.toml)
     #   imbalanced-learn
+    #   lime
     #   mlflow
+    #   shap
     #   sklearn-compat
     #   skops
 scipy==1.18.0
     # via
     #   imbalanced-learn
+    #   lime
     #   mlflow
+    #   scikit-image
     #   scikit-learn
+    #   shap
     #   skops
     #   statsmodels
     #   xgboost
@@ -389,6 +444,8 @@ seaborn==0.13.2
     # via credit-scoring-modelling (pyproject.toml)
 setuptools==84.0.0
     # via cufflinks
+shap==0.52.0
+    # via credit-scoring-modelling (pyproject.toml)
 six==1.17.0
     # via
     #   chart-studio
@@ -398,6 +455,8 @@ sklearn-compat==0.1.6
     # via imbalanced-learn
 skops==0.14.0
     # via mlflow
+slicer==0.0.8
+    # via shap
 smmap==5.0.3
     # via gitdb
 sqlalchemy==2.0.52
@@ -421,12 +480,18 @@ threadpoolctl==3.6.0
     # via
     #   imbalanced-learn
     #   scikit-learn
+tifffile==2026.9.20
+    # via scikit-image
 toml==0.10.2
     # via streamlit
 tornado==6.5.8
     # via
     #   ipykernel
     #   jupyter-client
+tqdm==4.70.1
+    # via
+    #   lime
+    #   shap
 traitlets==5.16.1
     # via
     #   ipykernel
@@ -435,6 +500,8 @@ traitlets==5.16.1
     #   jupyter-client
     #   jupyter-core
     #   matplotlib-inline
+typeguard==4.6.0
+    # via pandera
 typing-extensions==4.16.0
     # via
     #   aiohttp
@@ -449,13 +516,18 @@ typing-extensions==4.16.0
     #   opentelemetry-api
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
+    #   pandera
     #   pydantic
     #   pydantic-core
     #   referencing
     #   sqlalchemy
     #   starlette
     #   streamlit
+    #   typeguard
+    #   typing-inspect
     #   typing-inspection
+typing-inspect==0.9.0
+    # via pandera
 typing-inspection==0.4.4
     # via
     #   fastapi

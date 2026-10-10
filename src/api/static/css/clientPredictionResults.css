@@ -1,0 +1,373 @@
+/* ========================================================================== */
+/* Variables                                                                  */
+/* ========================================================================== */
+:root {
+    --primary: #2563eb;
+    --primary-soft: #eff6ff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --surface: #ffffff;
+    --surface-alt: #f8fafc;
+    --danger-bg: #fef2f2;
+    --danger: #b91c1c;
+    --success-bg: #f0fdf4;
+    --success: #15803d;
+    --info-bg: #eff6ff;
+    --info: #1d4ed8;
+    --radius: 14px;
+    --radius-sm: 9px;
+    --shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.25);
+}
+
+/* ========================================================================== */
+/* Base                                                                       */
+/* ========================================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    line-height: 1.5;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 10% 0%, #dbeafe 0, transparent 45%),
+        radial-gradient(circle at 90% 100%, #e0e7ff 0, transparent 45%),
+        #f1f5f9;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 48px 20px;
+}
+
+/* ========================================================================== */
+/* Carte                                                                      */
+/* ========================================================================== */
+.result-card {
+    width: 100%;
+    max-width: 1200px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.result-header {
+    padding: 36px 40px;
+    text-align: center;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+}
+
+.result-header .badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.result-header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.result-header p {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.result-body {
+    padding: 36px 40px 40px;
+}
+
+/* ========================================================================== */
+/* Sections                                                                   */
+/* ========================================================================== */
+.client-information,
+.result-row {
+    margin-bottom: 32px;
+}
+
+/* Prediction a gauche, waterfall a droite, alignes en haut */
+.result-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 32px;
+    align-items: start;
+}
+
+.waterfall img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.client-information h2,
+.prediction h2,
+.waterfall h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ========================================================================== */
+/* Verdict                                                                    */
+/* ========================================================================== */
+.risk {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+}
+
+.risk-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 52px;
+    height: 52px;
+    font-size: 26px;
+    font-weight: 700;
+    border-radius: 50%;
+    color: #ffffff;
+}
+
+.risk-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.risk-label {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.risk-description {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.risk-class {
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.high-risk {
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-color: #fecaca;
+}
+
+.high-risk .risk-icon {
+    background: var(--danger);
+}
+
+.low-risk {
+    color: var(--success);
+    background: var(--success-bg);
+    border-color: #bbf7d0;
+}
+
+.low-risk .risk-icon {
+    background: var(--success);
+}
+
+/* ========================================================================== */
+/* Jauge de probabilite                                                       */
+/* ========================================================================== */
+.probability {
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-alt);
+}
+
+.probability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+
+.probability-header strong {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* Le degrade couvre toute la jauge ; un masque gris cache la partie
+   au-dela de la probabilite, pour que la couleur reflete le niveau absolu */
+.gauge {
+    position: relative;
+    height: 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #22c55e 0%, #eab308 50%, #ef4444 100%);
+    overflow: hidden;
+}
+
+.gauge-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--border);
+}
+
+.gauge-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* ========================================================================== */
+/* Recapitulatif client                                                       */
+/* ========================================================================== */
+.client-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-alt);
+}
+
+.label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.value {
+    font-size: 16px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.value.empty {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--muted);
+}
+
+/* ========================================================================== */
+/* Bouton retour                                                              */
+/* ========================================================================== */
+.back-button {
+    display: block;
+    padding: 14px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+    box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.7);
+    transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.back-button:hover {
+    filter: brightness(1.07);
+    box-shadow: 0 14px 24px -10px rgba(37, 99, 235, 0.8);
+}
+
+.back-button:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.4);
+    outline-offset: 2px;
+}
+
+/* ========================================================================== */
+/* Messages flash                                                             */
+/* ========================================================================== */
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.message {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-left: 4px solid currentColor;
+    border-radius: var(--radius-sm);
+}
+
+.message.error {
+    color: var(--danger);
+    background: var(--danger-bg);
+}
+
+.message.success {
+    color: var(--success);
+    background: var(--success-bg);
+}
+
+.message.info {
+    color: var(--info);
+    background: var(--info-bg);
+}
+
+/* ========================================================================== */
+/* Responsive                                                                 */
+/* ========================================================================== */
+@media (max-width: 900px) {
+
+    .result-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .result-header,
+    .result-body {
+        padding: 26px 22px;
+    }
+
+    .result-header h1 {
+        font-size: 24px;
+    }
+
+    .client-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .risk {
+        flex-wrap: wrap;
+    }
+}

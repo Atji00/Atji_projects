@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Credit Scoring - Prédiction pour le client {{ result.client.name or "" }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='css/clientPredictionResults.css') }}">
+</head>
+
+<body>
+
+    {% set client = result.client %}
+    {% set yes_no = {true: 'Oui', false: 'Non', 'true': 'Oui', 'false': 'Non'} %}
+
+    <main class="page">
+
+        <section class="result-card">
+
+            <header class="result-header">
+                <span class="badge">Credit Scoring</span>
+                <h1>Prédiction pour le client {{ (client.name if client.name else "non renseigné") | upper }}</h1>
+                <p>Évaluation du risque de crédit du client</p>
+            </header>
+
+            <div class="result-body">
+
+                {% if flashes %}
+                    <div class="messages" role="status">
+                        {% for flash in flashes %}
+                            <div class="message {{ flash.category }}">{{ flash.message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Prediction (gauche) et waterfall SHAP (droite) sur la meme ligne -->
+                <div class="result-row">
+
+                <!-- Verdict du modele + probabilite -->
+                <section class="prediction">
+
+                    <h2>Prédiction</h2>
+
+                    {% if result.prediction == 1 %}
+                        <div class="risk high-risk">
+                            <span class="risk-icon" aria-hidden="true">!</span>
+                            <div class="risk-text">
+                                <span class="risk-label">Défaut de crédit prédit</span>
+                                <span class="risk-description">Le profil présente un risque élevé.</span>
+                            </div>
+                            <span class="risk-class">Classe 1</span>
+                        </div>
+                    {% else %}
+                        <div class="risk low-risk">
+                            <span class="risk-icon" aria-hidden="true">✓</span>
+                            <div class="risk-text">
+                                <span class="risk-label">Pas de défaut prédit</span>
+                                <span class="risk-description">Le profil présente un risque faible.</span>
+                            </div>
+                            <span class="risk-class">Classe 0</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="probability">
+                        <div class="probability-header">
+                            <span class="label">Probabilité de défaut</span>
+                            <strong>{{ probability_pct }} %</strong>
+                        </div>
+
+                        <div class="gauge" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ probability_pct }}" aria-label="Probabilité de défaut">
+                            <div class="gauge-mask" style="width: {{ 100 - probability_pct }}%"></div>
+                        </div>
+
+                        <div class="gauge-scale">
+                            <span>0 %</span>
+                            <span>50 %</span>
+                            <span>100 %</span>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- Explication SHAP de la prediction -->
+                <section class="waterfall">
+
+                    <h2>Explication de la prédiction</h2>
+
+                    {% if waterfall %}
+                        <img src="data:image/png;base64,{{ waterfall }}" alt="Waterfall SHAP de la prédiction du client">
+                    {% else %}
+                        <p class="value empty">Explication indisponible pour ce client.</p>
+                    {% endif %}
+
+                </section>
+
+                </div>
+
+                <!-- Recapitulatif des donnees saisies -->
+                <section class="client-information">
+
+                    <h2>Informations client</h2>
+
+                    <div class="client-grid">
+
+                        <div class="information">
+                            <span class="label">Nom</span>
+                            {% if client.name %}
+                                <span class="value">{{ client.name | upper }}</span>
+                            {% else %}
+                                <span class="value empty">Non renseigné</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Email</span>
+                            {% if client.email %}
+                                <span class="value">{{ client.email }}</span>
+                            {% else %}
+                                <span class="value empty">Non renseigné</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Solde bancaire</span>
+                            <span class="value">{{ client.balance }} €</span>
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Situation matrimoniale</span>
+                            <span class="value">{{ client.marital | capitalize }}</span>
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Nombre de contacts</span>
+                            <span class="value">{{ client.campaign }}</span>
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Contacts précédents</span>
+                            <span class="value">{{ client.previous }}</span>
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Crédit immobilier</span>
+                            <span class="value">{{ yes_no.get(client.housing, client.housing) }}</span>
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Prêt personnel</span>
+                            <span class="value">{{ yes_no.get(client.loan, client.loan) }}</span>
+                        </div>
+
+                        <div class="information">
+                            <span class="label">Campagne précédente</span>
+                            <span class="value">{{ client.poutcome | capitalize }}</span>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <a href="{{ url_for('form_page') }}" class="back-button">Nouvelle prédiction</a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
