@@ -37,6 +37,7 @@ inttest:
 
 uv_sync:
 	uv sync
+	uv lock
 	uv pip compile pyproject.toml -o requirements.txt
 
 run_uvicorn:
