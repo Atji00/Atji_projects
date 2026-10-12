@@ -32,3 +32,6 @@ data/intermediate/unprocessed_train/
 # Rapports générés pendant l'entraînement
 src/scoring_model/reports/
 mlartifacts/
+
+# Métadonnées de build locales
+*.egg-info/

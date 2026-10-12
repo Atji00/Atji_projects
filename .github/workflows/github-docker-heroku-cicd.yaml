@@ -1,5 +1,5 @@
 
-name: Depoyment Credit-Scoring App to Herokucloud
+name: Deployment Credit-Scoring App to Heroku
 
 on:
   push:
@@ -10,6 +10,11 @@ on:
 
 permissions:
   contents: read
+
+# Un seul run à la fois par branche : un push récent annule le run en cours
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -49,8 +54,12 @@ jobs:
     # Pas de déploiement depuis une pull request.
     if: github.event_name != 'pull_request'
 
+    # HEROKU_API_KEY au niveau du job : toutes les commandes heroku
+    # (auth, login registry, release) en ont besoin
     env:
       HEROKU_APP_NAME: ${{ vars.HEROKU_APP_NAME }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
 
     steps:
       - name: Checkout repository
@@ -60,49 +69,40 @@ jobs:
         run: npm install --global heroku
 
       - name: Authenticate with Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku auth:whoami
 
+      # --provenance/--sbom=false : le registre Heroku refuse les manifest
+      # lists OCI (attestations) produites par défaut par BuildKit
       - name: Build Docker image
         run: |
           docker build \
             --platform linux/amd64 \
+            --provenance=false \
+            --sbom=false \
             -f .docker/Dockerfile \
-            -t registry.heroku.com/$HEROKU_APP_NAME/web \
+            -t "registry.heroku.com/$HEROKU_APP_NAME/web" \
             .
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Tag latest + tag du commit pour pouvoir revenir à une version précise
       - name: Tag image for Docker Hub
-        env:
-          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
         run: |
-          docker tag \
-            registry.heroku.com/$HEROKU_APP_NAME/web \
-            $DOCKERHUB_USERNAME/credit-scoring:latest
+          docker tag "registry.heroku.com/$HEROKU_APP_NAME/web" "$DOCKERHUB_USERNAME/credit-scoring:latest"
+          docker tag "registry.heroku.com/$HEROKU_APP_NAME/web" "$DOCKERHUB_USERNAME/credit-scoring:${GITHUB_SHA::7}"
 
       - name: Push image to Docker Hub
-        env:
-          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
-        run: |
-          docker push \
-            $DOCKERHUB_USERNAME/credit-scoring:latest
+        run: docker push --all-tags "$DOCKERHUB_USERNAME/credit-scoring"
 
       - name: Login to Heroku Container Registry
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
 
       - name: Push image to Heroku
-        run: |
-          docker push registry.heroku.com/$HEROKU_APP_NAME/web
+        run: docker push "registry.heroku.com/$HEROKU_APP_NAME/web"
 
       - name: Release application
-        run: |
-          heroku container:release web \
-            --app "$HEROKU_APP_NAME"
+        run: heroku container:release web --app "$HEROKU_APP_NAME"
