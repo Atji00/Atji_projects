@@ -461,6 +461,7 @@ smmap==5.0.3
     # via gitdb
 sqlalchemy==2.0.52
     # via
+    #   credit-scoring-modelling (pyproject.toml)
     #   alembic
     #   mlflow
 sqlparse==0.6.0

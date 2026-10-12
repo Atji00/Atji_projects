@@ -1,0 +1,34 @@
+
+# Environnements Python et caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Git et fichiers locaux
+.git/
+.github/
+.docker/
+.gitignore
+.env
+.env.*
+!.env.example
+
+# Exploration, tests et documentation
+notebooks/
+tests/
+*.md
+*.Makefile
+
+# Dépendances locales alternatives
+requirements.txt
+
+# Données non nécessaires à l'API
+data/raw/
+data/processed/processed_train/
+data/intermediate/unprocessed_train/
+
+# Rapports générés pendant l'entraînement
+src/scoring_model/reports/
+mlartifacts/
