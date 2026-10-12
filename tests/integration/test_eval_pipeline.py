@@ -6,9 +6,13 @@ import pytest
 from sklearn.metrics import accuracy_score
 
 from scoring_model.eval_artefacts_func.classification_report import ClassificationReport
+from scoring_model.runtime.config import ConfigLoader
 from scoring_model.scripts.eval import eval_orchestration
 
 from .conftest import MODEL_NAME
+
+# Client explique par le waterfall : ligne rd_seed du jeu de test
+RD_SEED = ConfigLoader().load_yaml("config.yaml")["rd_seed"]
 
 pytestmark = pytest.mark.integration
 
@@ -52,7 +56,7 @@ class TestArtefacts:
         f"figures/{MODEL_NAME}/learning_curve_{MODEL_NAME}.png",
         f"figures/{MODEL_NAME}/shap_summary_{MODEL_NAME}.png",
         f"figures/{MODEL_NAME}/shap_summary_bar_{MODEL_NAME}.png",
-        f"figures/{MODEL_NAME}/waterfall_ClientX.png",
+        f"figures/{MODEL_NAME}/waterfall_client_{RD_SEED}.png",
         "Readme.md",
     ])
     def test_artefact_is_written(self, evaluated_project, relative_path):

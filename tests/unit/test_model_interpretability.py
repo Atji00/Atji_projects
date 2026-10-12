@@ -14,7 +14,7 @@ from scoring_model.eval_artefacts_func.model_interpretability import ModelInterp
 def interpreter(monkeypatch, patch_paths, eval_files, fitted_model):
     patch_paths(interpretability_module)
     monkeypatch.setattr(interpretability_module, "MODEL_NAME", "logistic_regression_test")
-    monkeypatch.setattr(interpretability_module, "model_trained", fitted_model)
+    monkeypatch.setattr(interpretability_module, "MODEL_TRAINED", fitted_model)
     return ModelInterpreter()
 
 
@@ -106,16 +106,17 @@ class TestSummaryPlots:
 
 class TestWaterfall:
 
-    def test_default_client_is_saved(self, interpreter, output_dir):
+    def test_rd_seed_client_is_saved(self, interpreter, output_dir):
         interpreter.plot_waterfall()
-        assert (output_dir / "waterfall_ClientX.png").is_file()
+        assert (output_dir / f"waterfall_client_{interpreter.random}.png").is_file()
 
-    def test_client_series_with_custom_name(self, interpreter, eval_files, output_dir):
-        client = eval_files["X"].iloc[0]
-        interpreter.plot_waterfall(client_information=client, client_name="Alice")
-        assert (output_dir / "waterfall_Alice.png").is_file()
+    def test_client_index_follows_rd_seed(self, interpreter, output_dir):
+        interpreter.random = 0
+        interpreter.plot_waterfall()
+        assert (output_dir / "waterfall_client_0.png").is_file()
 
-    def test_invalid_client_information_raises(self, interpreter):
+    def test_client_arguments_are_no_longer_accepted(self, interpreter):
+        # Le client explique est fixe par rd_seed (config.yaml)
         with pytest.raises(TypeError):
             interpreter.plot_waterfall(client_information=[1, 2, 3])
 
@@ -154,11 +155,11 @@ class TestWaterfall:
 
         monkeypatch.setattr(Figure, "savefig", recording_savefig)
 
-        client = eval_files["X"].iloc[0]
-        probability = fitted_model.predict_proba(client.to_frame().T)[0, 1]
+        client = eval_files["X"].iloc[[interpreter.random]]
+        probability = fitted_model.predict_proba(client)[0, 1]
 
-        interpreter.plot_waterfall(client_information=client, client_name="Alice")
+        interpreter.plot_waterfall()
 
-        assert "Client: Alice" in titles[0]
+        assert f"Client: {interpreter.random}  |" in titles[0]
         assert f"Probability of Default: {probability:.2%}" in titles[0]
         assert interpreter._risk_class(probability) in titles[0]

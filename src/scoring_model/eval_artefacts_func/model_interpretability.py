@@ -184,7 +184,7 @@ class ModelInterpreter:
         fig = plt.gcf()
 
         fig.suptitle(
-                    f"Client->: {self.random}  |  "
+                    f"Client: {self.random}  |  "
                     f"Probability of Default: {probability:.2%}  |  "
                     f"Risk Class: {risk_class}",
                     x=0.5,
@@ -201,7 +201,7 @@ class ModelInterpreter:
                 color="grey",
                 )
 
-        output = (self.output_dir / f"waterfall_client{self.random}.png")
+        output = (self.output_dir / f"waterfall_client_{self.random}.png")
 
         fig.savefig(output, dpi=300, bbox_inches="tight")
 

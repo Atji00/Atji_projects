@@ -2,7 +2,7 @@
 PYTHON = .venv/Scripts/python.exe
 
 # Commandes disponibles
-.PHONY: mlflow-start train predict evaluate test unitest inttest 
+.PHONY: mlflow-start train predict evaluate test unitest inttest \
 		uv_sync run_uvicorn
 
 # --------------------------------------------------

@@ -50,4 +50,4 @@
 
 ### SHAP Waterfall - ClientX
 
-![SHAP Waterfall](figures/logistic_regression_v001/waterfall_ClientX.png)
+![SHAP Waterfall](figures/logistic_regression_v001/waterfall_client_42.png)

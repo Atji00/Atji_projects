@@ -46,7 +46,7 @@ PATHS_MODULES = (
                     eval_report_module,
                 )
 
-# Modules importing MODEL_NAME / model_trained from scripts.predict
+# Modules importing MODEL_NAME / MODEL_TRAINED from scripts.predict
 MODEL_MODULES = (
                     predict_module,
                     classification_report_module,
@@ -108,8 +108,8 @@ def use_model(monkeypatch, paths: ProjectPaths, model_name: str = MODEL_NAME):
 
         monkeypatch.setattr(module, "MODEL_NAME", model_name)
 
-        if hasattr(module, "model_trained"):
-            monkeypatch.setattr(module, "model_trained", model)
+        if hasattr(module, "MODEL_TRAINED"):
+            monkeypatch.setattr(module, "MODEL_TRAINED", model)
 
     return model
 

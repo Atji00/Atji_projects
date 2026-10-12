@@ -1,5 +1,5 @@
 
-.PHONY: docker_build docker_run docker_start docker_stop docker_logs docker_ps 
+.PHONY: docker_build docker_run docker_start docker_stop docker_logs docker_ps \
 		docker_shell docker_rm docker_rmi docker_push docker_login docker_clean
 
 # Variables

@@ -1,18 +1,20 @@
 import json
 
+from scoring_model.runtime.config import ConfigLoader
 from scoring_model.runtime.paths import ProjectPaths
 from scoring_model.scripts.predict import MODEL_NAME
 
 
 class EvaluationReport:
 
-    def __init__(self, client_name: str = "ClientX") -> None:
+    def __init__(self, configfile: str = "config.yaml") -> None:
 
         self.paths = ProjectPaths()
+        self.config = ConfigLoader().load_yaml(configfile)
         self.name = MODEL_NAME
 
         # Client explained by ModelInterpreter.plot_waterfall
-        self.client_name = client_name
+        self.client_name = self.config['rd_seed']
 
         self.metrics_dir = self.paths.metrics / self.name
         self.figures_dir = self.paths.figures / self.name
@@ -105,7 +107,7 @@ class EvaluationReport:
 
 ### SHAP Waterfall - {self.client_name}
 
-![SHAP Waterfall](figures/{self.name}/waterfall_{self.client_name}.png)
+![SHAP Waterfall](figures/{self.name}/waterfall_client_{self.client_name}.png)
 """
 
         self.output_dir.parent.mkdir(parents=True, exist_ok=True)

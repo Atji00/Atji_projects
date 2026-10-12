@@ -35,7 +35,7 @@ def setup(monkeypatch, patch_paths, eval_files, report_dict, fitted_model, mlflo
 
     paths = patch_paths(ml_flow_module)
     monkeypatch.setattr(ml_flow_module, "MODEL_NAME", "test_model")
-    monkeypatch.setattr(ml_flow_module, "model_trained", fitted_model)
+    monkeypatch.setattr(ml_flow_module, "MODEL_TRAINED", fitted_model)
     monkeypatch.setattr(Experiment, "_server_is_reachable", lambda self, timeout=1.0: True)
 
     metrics_dir = paths.metrics / "test_model"

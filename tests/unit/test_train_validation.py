@@ -13,7 +13,7 @@ from scoring_model.eval_artefacts_func.train_validation import LearningCurve
 def learning_curve(monkeypatch, patch_paths, eval_files, fitted_model):
     patch_paths(train_validation_module)
     monkeypatch.setattr(train_validation_module, "MODEL_NAME", "test_model")
-    monkeypatch.setattr(train_validation_module, "model_trained", fitted_model)
+    monkeypatch.setattr(train_validation_module, "MODEL_TRAINED", fitted_model)
     return LearningCurve(split=3)
 
 

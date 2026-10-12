@@ -74,7 +74,7 @@ class TestShapSection:
     @pytest.mark.parametrize("image", [
         "shap_summary_test_model.png",
         "shap_summary_bar_test_model.png",
-        "waterfall_ClientX.png",
+        "waterfall_client_42.png",
     ])
     def test_shap_plots_are_linked(self, content, image):
         assert f"(figures/test_model/{image})" in content
@@ -82,12 +82,15 @@ class TestShapSection:
     def test_shap_section_is_after_learning_curve(self, content):
         assert content.index("## Learning Curve") < content.index("## Model Interpretability (SHAP)")
 
-    def test_custom_client_name_is_used(self, evaluation_report, tmp_project):
-        evaluation_report.client_name = "Alice"
+    def test_client_name_is_read_from_config(self, evaluation_report):
+        assert evaluation_report.client_name == evaluation_report.config["rd_seed"]
+
+    def test_waterfall_section_uses_client_name(self, evaluation_report, tmp_project):
+        evaluation_report.client_name = 7
         evaluation_report.build()
         content = (tmp_project.reports / "Readme.md").read_text(encoding="utf-8")
-        assert "### SHAP Waterfall - Alice" in content
-        assert "(figures/test_model/waterfall_Alice.png)" in content
+        assert "### SHAP Waterfall - 7" in content
+        assert "(figures/test_model/waterfall_client_7.png)" in content
 
     def test_links_match_files_written_by_model_interpreter(
         self, monkeypatch, patch_paths, report_dict, fitted_model, tmp_project
@@ -98,7 +101,7 @@ class TestShapSection:
         patch_paths(eval_report_module, interpretability_module)
         monkeypatch.setattr(eval_report_module, "MODEL_NAME", name)
         monkeypatch.setattr(interpretability_module, "MODEL_NAME", name)
-        monkeypatch.setattr(interpretability_module, "model_trained", fitted_model)
+        monkeypatch.setattr(interpretability_module, "MODEL_TRAINED", fitted_model)
 
         metrics_dir = tmp_project.metrics / name
         metrics_dir.mkdir(parents=True)

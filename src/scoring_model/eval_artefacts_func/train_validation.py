@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedKFold, learning_curve
 
 from scoring_model.runtime.config import ConfigLoader
 from scoring_model.runtime.paths import ProjectPaths
-from scoring_model.scripts.predict import MODEL_NAME, model_trained
+from scoring_model.scripts.predict import MODEL_NAME, MODEL_TRAINED
 
 
 class LearningCurve:
@@ -29,7 +29,7 @@ class LearningCurve:
         self.y_train = pd.read_parquet(self.y_dir / "y_train.parquet")
 
         self.model_name = MODEL_NAME
-        self.model_trained = model_trained
+        self.model_trained = MODEL_TRAINED
         
         self.stratfold = StratifiedKFold(n_splits=split, shuffle=True, random_state=self.random)
 
