@@ -1,0 +1,11 @@
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+    image: credit-scoring-modeling:latest
+    container_name: test-api
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

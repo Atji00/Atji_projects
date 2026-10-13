@@ -1,6 +1,6 @@
 # Credit Scoring Modelling
 
-> Projet de Machine Learning **end-to-end** : de la donnée brute jusqu'à une application web de scoring, avec suivi des expériences (MLflow), interprétabilité (SHAP) et tests automatisés.
+> Projet de Machine Learning **end-to-end** : de la donnée brute jusqu'à une application web de scoring, avec suivi des expériences (MLflow), interprétabilité (SHAP), tests automatisés, conteneurisation (Docker) et déploiement continu sur Heroku (GitHub Actions).
 
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6-orange)
@@ -8,6 +8,9 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-web%20app-009688)
 ![MLflow](https://img.shields.io/badge/MLflow-tracking-0194E2)
 ![uv](https://img.shields.io/badge/uv-package%20manager-purple)
+![Docker](https://img.shields.io/badge/Docker-container-2496ED)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF)
+![Heroku](https://img.shields.io/badge/Heroku-deploy-430098)
 
 ---
 
@@ -27,8 +30,9 @@
 - [Modèles et résultats](#modèles-et-résultats)
 - [Interprétabilité](#interprétabilité)
 - [Tests](#tests)
+- [Conteneurisation (Docker)](#conteneurisation-docker)
+- [CI/CD et déploiement](#cicd-et-déploiement)
 - [Commandes Makefile](#commandes-makefile)
-- [Feuille de route](#feuille-de-route)
 - [Auteur](#auteur)
 
 ---
@@ -74,6 +78,14 @@ Le schéma complet (types, bornes, modalités autorisées) est défini dans `con
 
 ```text
 credit-scoring-modelling/
+├── .github/workflows/            # Pipeline CI/CD GitHub Actions (tests → Docker Hub → Heroku)
+│   ├── github-docker-heroku-cicd.yaml
+│   └── README.md                 #   documentation détaillée du pipeline
+│
+├── .docker/
+│   ├── Dockerfile                # Image multi-stage de l'API (uv + python:3.12-slim)
+│   └── cmdDocker.Makefile        # Raccourcis Docker (build, run, logs, push…)
+│
 ├── configs/                      # Configuration YAML (aucun paramètre en dur)
 │   ├── config.yaml               #   métadonnées du projet, graine aléatoire
 │   ├── data.yaml                 #   formats de lecture + schéma de validation
@@ -122,7 +134,8 @@ credit-scoring-modelling/
 ├── mlartifacts/ · mlflow.db      # Artefacts et base de suivi MLflow
 ├── pyproject.toml · uv.lock      # Dépendances (uv)
 ├── requirements.txt              # Dépendances figées (générées depuis pyproject)
-├── Makefile                      # Raccourcis des commandes
+├── Makefile                      # Raccourcis (inclut cmdPython.Makefile et .docker/cmdDocker.Makefile)
+├── .dockerignore                 # Fichiers exclus du contexte de build Docker
 └── .env.example                  # Variables d'environnement attendues
 ```
 
@@ -304,7 +317,6 @@ Tous les paramètres sont externalisés dans `configs/` et chargés via `scoring
 | `data.yaml` | Formats d'entrée (CSV `;`, TXT tabulé), taille max, nom de la cible, schéma de validation colonne par colonne |
 | `training.yaml` | `test_size: 0.20`, split stratifié ; `StandardScaler` ; `OneHotEncoder(drop="first", handle_unknown="ignore")` ; rééchantillonnage `smotenc` |
 | `models.yaml` | Activation et hyperparamètres de chaque modèle |
-| `experiments.yaml` | URI de tracking, nom d'expérience, tags, registre MLflow |
 
 Exemple — ajouter ou ajuster un modèle :
 
@@ -386,9 +398,94 @@ python -m pytest -m integration    # uniquement les tests d'intégration
 
 Rapports : `tests/unit_tests_reports/` et `tests/integration_tests_reports/`.
 
+Les tests sont aussi exécutés automatiquement par la CI à chaque push et pull request sur la branche `mlops` (voir [CI/CD et déploiement](#cicd-et-déploiement)).
+
+---
+
+## Conteneurisation (Docker)
+
+L'application web est packagée dans une image Docker définie par [`.docker/Dockerfile`](.docker/Dockerfile) :
+
+| Étape | Détail |
+|---|---|
+| **Stage 1 – builder** | `python:3.12-slim` + `uv` (version figée) ; installe les dépendances de production depuis `uv.lock` (`uv sync --frozen --no-dev`) |
+| **Stage 2 – runtime** | `python:3.12-slim` + `libgomp1` (requis par XGBoost) ; copie uniquement le `.venv`, `configs/`, `src/` et les données de test nécessaires à l'API |
+| **Sécurité** | exécution sous un utilisateur non-root (`appuser`) |
+| **Démarrage** | `uvicorn main:app` sur le port `$PORT` (8000 par défaut), avec `--proxy-headers` pour générer des URLs `https` derrière le routeur Heroku |
+
+Le fichier [`.dockerignore`](.dockerignore) exclut du contexte de build l'environnement local, les notebooks, les tests, les données brutes et d'entraînement.
+
+### Construire et lancer l'image en local
+
+```bash
+# Construire l'image
+make docker_build
+# équivalent : docker build -f .docker/Dockerfile -t credit-scoring-modeling:latest .
+
+# Lancer le conteneur (SESSION_SECRET_KEY est lu depuis .env)
+make docker_run
+# équivalent : docker run -d --name credit-scoring-api -p 8000:8000 --env-file .env credit-scoring-modeling:latest
+```
+
+L'application est alors disponible sur <http://127.0.0.1:8000>. Suivre les logs avec `make docker_logs`, arrêter avec `make docker_stop`.
+
+### Utiliser l'image publiée sur Docker Hub
+
+Chaque déploiement publie l'image sur Docker Hub avec deux tags : `latest` et le SHA court du commit.
+
+```bash
+docker pull <DOCKERHUB_USERNAME>/credit-scoring:latest
+docker run -p 8000:8000 -e SESSION_SECRET_KEY=<valeur> <DOCKERHUB_USERNAME>/credit-scoring:latest
+```
+
+---
+
+## CI/CD et déploiement
+
+Le pipeline GitHub Actions [`.github/workflows/github-docker-heroku-cicd.yaml`](.github/workflows/github-docker-heroku-cicd.yaml) automatise les tests et le déploiement.
+
+```text
+push / pull request / lancement manuel sur la branche mlops
+                    │
+                    ▼
+   ┌──────────────────────────────────┐
+   │ test (CI)                        │  uv sync --locked → pytest -v
+   └────────────────┬─────────────────┘
+                    │ succès, hors pull request
+                    ▼
+   ┌──────────────────────────────────┐
+   │ deploy (CD)                      │  build Docker → push Docker Hub
+   │ environnement heroku-deployment  │  → push registry Heroku → release
+   └──────────────────────────────────┘
+```
+
+| Job | Rôle |
+|---|---|
+| `test` | Installe Python 3.12 et les dépendances avec `uv`, puis lance toute la suite `pytest` |
+| `deploy` | Construit l'image, la publie sur Docker Hub (`latest` + SHA du commit), la pousse sur le registre Heroku et la met en production |
+
+**Configuration** (environnement GitHub `heroku-deployment`) :
+
+| Type | Nom |
+|---|---|
+| Secrets | `HEROKU_API_KEY`, `DOCKERHUB_TOKEN` |
+| Variables | `HEROKU_APP_NAME`, `DOCKERHUB_USERNAME` |
+
+Côté Heroku, la clé de session doit être définie une fois :
+
+```bash
+heroku config:set SESSION_SECRET_KEY=<valeur-secrète> --app <nom-app>
+```
+
+> Détails des étapes, lancement manuel et dépannage : [`.github/workflows/README.md`](.github/workflows/README.md).
+
 ---
 
 ## Commandes Makefile
+
+Le `Makefile` principal inclut `cmdPython.Makefile` (pipeline ML, tests, application) et `.docker/cmdDocker.Makefile` (Docker).
+
+### Python / ML
 
 | Commande | Action |
 |---|---|
@@ -401,17 +498,20 @@ Rapports : `tests/unit_tests_reports/` et `tests/integration_tests_reports/`.
 | `make inttest` | Exécute les tests d'intégration avec rapport HTML |
 | `make uv_sync` | Synchronise l'environnement, met à jour `uv.lock` et régénère `requirements.txt` |
 
----
+### Docker
 
-## Feuille de route
-
-- [ ] Conteneurisation avec Docker (`.docker/DockerFile`)
-- [ ] CI/CD GitHub Actions et déploiement sur Heroku (`.github/workflows/heroku.yaml`)
-- [ ] Activer le rééchantillonnage SMOTE-NC configuré dans `training.yaml`
-- [ ] Optimisation des hyperparamètres et du seuil de décision (orienté rappel)
-- [ ] Utiliser le MLflow Model Registry pour la promotion du modèle servi
-- [ ] Rendre les paramètres MLflow et le modèle de prédiction pilotables depuis `experiments.yaml`
-
+| Commande | Action |
+|---|---|
+| `make docker_build` | Construit l'image `credit-scoring-modeling:latest` |
+| `make docker_run` | Crée et démarre le conteneur `credit-scoring-api` sur le port 8000, avec les variables de `.env` |
+| `make docker_start` / `make docker_stop` | Démarre / arrête le conteneur existant |
+| `make docker_logs` | Affiche les logs du conteneur en continu |
+| `make docker_ps` | Liste les conteneurs actifs |
+| `make docker_shell` | Ouvre un shell dans le conteneur |
+| `make docker_rm` / `make docker_rmi` | Supprime le conteneur / l'image locale |
+| `make docker_login` | Connexion à Docker Hub |
+| `make docker_push DOCKERHUB_USER=<id>` | Tague et publie l'image sur Docker Hub |
+| `make docker_clean` | Nettoie les ressources Docker inutilisées (`docker system prune`) |
 ---
 
 ## Auteur

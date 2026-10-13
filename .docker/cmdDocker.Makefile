@@ -1,20 +1,26 @@
 
 .PHONY: docker_build docker_run docker_start docker_stop docker_logs docker_ps \
-		docker_shell docker_rm docker_rmi docker_push docker_login docker_clean
+		docker_shell docker_rm docker_rmi docker_push docker_login docker_clean \
+		docker_compose
 
 # Variables
 IMAGE_NAME := credit-scoring-modeling
 CONTAINER_NAME := credit-scoring-api
 TAG := latest
 PORT := 8000
+ENV_FILE := .env
 
 # Construire l'image Docker
 docker_build:
 	docker build -f .docker/Dockerfile -t $(IMAGE_NAME):$(TAG) .
 
-# Créer et démarrer un conteneur
+# Créer et démarrer un conteneur (SESSION_SECRET_KEY est lu depuis $(ENV_FILE))
 docker_run:
-	docker run -d --name $(CONTAINER_NAME) -p $(PORT):8000 $(IMAGE_NAME):$(TAG)
+	docker run -d --name $(CONTAINER_NAME) -p $(PORT):8000 --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG)
+
+# lancer docker compose
+docker_compose:
+	docker compose -f .docker/compose.yaml up --build -d
 
 # Démarrer un conteneur existant
 docker_start:
