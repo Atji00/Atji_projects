@@ -109,14 +109,7 @@ class Artefacts(ModelInterpreter):
 
         try:
 
-            fig.suptitle(
-                        f"Client: {client_name}  |  "
-                        f"Probability of Default: {probability:.2%}  |  "
-                        f"Risk Class: {risk_class}",
-                        x=0.5,
-                        y=1.08,
-                        fontsize=12,
-                    )
+            fig.title(f"Waterfall_Plot pour Client: {client_name}")
 
             fig.text(
                     0.5,
