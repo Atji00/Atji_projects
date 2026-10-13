@@ -49,7 +49,7 @@ jobs:
     needs: test
 
     # Les secrets de production ne sont accessibles qu'ici.
-    environment: production-heroku
+    environment: heroku-deployment
 
     # Pas de déploiement depuis une pull request.
     if: github.event_name != 'pull_request'
