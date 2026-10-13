@@ -98,6 +98,9 @@ jobs:
       - name: Push image to Docker Hub
         run: docker push --all-tags "$DOCKERHUB_USERNAME/credit-scoring"
 
+      - name: Configure Heroku container stack
+        run: heroku stack:set container --app "$HEROKU_APP_NAME"
+
       - name: Login to Heroku Container Registry
         run: heroku container:login
 
