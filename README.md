@@ -91,7 +91,6 @@ credit-scoring-modelling/
 │   ├── data.yaml                 #   formats de lecture + schéma de validation
 │   ├── training.yaml             #   split, preprocessing, rééchantillonnage
 │   ├── models.yaml               #   hyperparamètres des modèles
-│   └── experiments.yaml          #   paramètres MLflow
 │
 ├── data/
 │   ├── raw/                      # Données brutes (CSV)
