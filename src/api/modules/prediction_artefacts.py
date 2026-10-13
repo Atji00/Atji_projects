@@ -98,9 +98,6 @@ class Artefacts(ModelInterpreter):
 
         probability = model.predict_proba(self.input_data)[0, 1]
 
-        risk_class = self._risk_class(probability)
-
-
         self._new_figure()
 
         shap.plots.waterfall(shap_explanation, max_display=10, show=False)
@@ -109,7 +106,8 @@ class Artefacts(ModelInterpreter):
 
         try:
 
-            fig.title(f"Waterfall_Plot pour Client: {client_name}")
+            fig.suptitle(f"Waterfall_Plot pour Client: {client_name.upper()} | "
+                         f"Prob: {round(probability,4)}")
 
             fig.text(
                     0.5,

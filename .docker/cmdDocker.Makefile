@@ -25,14 +25,11 @@ docker_compose:
 # Démarrer un conteneur existant
 docker_start:
 	docker start $(CONTAINER_NAME)
+	docker logs -f $(CONTAINER_NAME)
 
 # Arrêter le conteneur
 docker_stop:
 	docker stop $(CONTAINER_NAME)
-
-# Afficher les logs
-docker_logs:
-	docker logs -f $(CONTAINER_NAME)
 
 # Lister les conteneurs actifs
 docker_ps:
